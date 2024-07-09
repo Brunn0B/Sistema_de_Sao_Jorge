@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>Sistema de Contas a Receber</title>
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    
+        /* Estilos gerais */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #222222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+    
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background-color: #393838;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e3e3e3;
+        }
+    
+        /* Formulário */
+        form {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background-color: #0d264e;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    
+        button:hover {
+            background-color: #f0e8e8;
+            color: #000000;
+        }
+    
+        .dropdown-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #ffffff;
+            display: block; /* Garante que o label ocupe toda a largura do pai */
+            padding: 14px 20px;
+            text-decoration: none;
+            background-color: #000000; /* Cor de fundo */
+            transition: background-color 0.3s ease; /* Transição suave */
+            cursor: pointer; /* Mostra que é clicável */
+            border-radius: 4px; /* Borda arredondada */
+        }
+    
+        .dropdown-label:hover {
+            background-color: #333333; /* Cor de fundo ao passar o mouse */
+        }
+    
+        /* Dropdown visível */
+        .dropdown-open {
+            display: block;
+            position: absolute;
+            margin-top: 5px; /* Espaçamento superior */
+            background-color: #ffffff;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            width: calc(100% - 40px); /* Ajusta a largura subtraindo o padding do label */
+            z-index: 1000; /* Garante que o dropdown esteja sobreposto */
+        }
+    
+        .dropdown-open option {
+            padding: 8px;
+        }
+    
+        /* Ocultar o select inicialmente */
+        #servicos {
+            display: none;
+        }
+    
+        /* Tabela */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+    
+        th,
+        td {
+            border: 1px solid #dddddd;
+            padding: 12px;
+            color: white;
+            text-align: left;
+        }
+    
+        th {
+            background-color: #1c1a1a;
+            font-weight: bold;
+            color: #f3f2f2;
+        }
+    
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+    
+        .modal.open {
+            display: block;
+        }
+    
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+    
+        .modal-header h2 {
+            margin: 0;
+            color: #333333;
+        }
+    
+        .modal-close {
+            cursor: pointer;
+            background-color: #dc3545;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+    
+        .modal-close:hover {
+            background-color: #bd2130;
+        }
+    
+        /* Navbar */
+        .navbar {
+            background-color: #000000;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 9999;
+        }
+    
+        .navbar a {
+            float: left;
+            display: block;
+            color: #ffffff;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+    
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/Sistema_de_Sao_Jorge/public/-TelaDoAdministrador.html"><i class="fas fa-home"></i> Home</a>
+        <a href=""><i class="fas fa-file-pdf"></i>Relatorio PDF</a>
+        <a href="/Sistema_de_Sao_Jorge/public/SuporteUsuarios.html"><i class="fas fa-headset"></i>Suporte</a>
+        <a href="ContasAPagar.html"><i class="fas fa-file-invoice-dollar"></i>Contas a Pagar</a>
+        <a href="RelatoriosFinanceiros-AnáliseDeCustos.html"><i class="fas fa-file-invoice-dollar"></i>Relatórios</a>
+        <a href="#about"><i class="fas fa-question-circle"></i>Manual do Usuário</a>
+        
+        
+        </div>
+    </div>
+    <div class="container">
+        <h1><br><br>Sistema de Contas a Receber</h1>
+        
+        <form id="accountForm">
+            <label for="IDCliente">ID do Cliente:</label>
+            <input type="text" id="IDCliente" name="IDCliente" required>
+
+            <label for="NomeCliente">Nome do Cliente:</label>
+            <input type="text" id="NomeCliente" name="NomeCliente" required>
+
+            <label for="CPF">CPF:</label>
+            <input type="text" id="CPF" name="CPF" required>
+
+            <label for="Valor">Valor:</label>
+            <input type="text" id="Valor" name="Valor" required>
+
+            <label for="DataVencimento">Data de Vencimento:</label>
+            <input type="date" id="DataVencimento" name="DataVencimento" required>
+
+            <label for="Status">Status:</label>
+            <select id="Status" name="Status" required>
+                <option value="Pendente">Pendente</option>
+                <option value="Pago">Pago</option>
+                <option value="Atrasado">Atrasado</option>
+            </select>
+
+            <button type="button" onclick="submitAccount()">Cadastrar</button>
+            <button onclick="deleteSelected()">Excluir Usuários Selecionados</button>
+        </form>
+
+        <table id="accountTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome do Cliente</th>
+                    <th>CPF</th>
+                    <th>Valor</th>
+                    <th>Data de Vencimento</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                    <th>Selecionar</th> 
+                </tr>
+            </thead>
+            <tbody>
+               
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal de Edição -->
+    <div class="modal" id="editModal">
+        <div class="modal-header">
+            <h2>Editar Conta a Receber</h2>
+            <button class="modal-close" onclick="closeModal()">X</button>
+        </div>
+        <form id="editForm">
+            <input type="hidden" id="editID">
+            <label for="editNomeCliente">Nome do Cliente:</label>
+            <input type="text" id="editNomeCliente" name="NomeCliente" required>
+
+            <label for="editCPF">CPF:</label>
+            <input type="text" id="editCPF" name="CPF" required>
+
+            <label for="editValor">Valor:</label>
+            <input type="text" id="editValor" name="Valor" required>
+
+            <label for="editDataVencimento">Data de Vencimento:</label>
+            <input type="date" id="editDataVencimento" name="DataVencimento" required>
+
+            <label for="editStatus">Status:</label>
+            <select id="editStatus" name="Status" required>
+                <option value="Pendente">Pendente</option>
+                <option value="Pago">Pago</option>
+                <option value="Atrasado">Atrasado</option>
+            </select>
+
+            <button type="button" onclick="saveEdit()">Salvar</button>
+        </form>
+    </div>
+
+    <script>
+        var dropdownVisible = false;
+
+        function toggleDropdown() {
+            var dropdown = document.getElementById("servicos");
+            dropdownVisible = !dropdownVisible;
+            if (dropdownVisible) {
+                dropdown.style.display = "block";
+            } else {
+                dropdown.style.display = "none";
+            }
+        }
+
+        function navigateToService() {
+            var dropdown = document.getElementById("servicos");
+            var selectedOption = dropdown.options[dropdown.selectedIndex].value;
+            if (selectedOption) {
+                window.location.href = selectedOption;
+            }
+        }
+    </script>
+
+    <script>
+        document.getElementById('Valor').addEventListener('input', function() {
+            var valor = this.value.replace(/\D/g, '');
+            valor = (valor / 100).toFixed(2);
+            this.value = 'R$ ' + valor.replace('.', ',');
+        });
+
+        document.getElementById('editValor').addEventListener('input', function() {
+            var valor = this.value.replace(/\D/g, '');
+            valor = (valor / 100).toFixed(2);
+            this.value = 'R$ ' + valor.replace('.', ',');
+        });
+
+        function submitAccount() {
+            var formData = {
+                IDCliente: document.getElementById('IDCliente').value,
+                NomeCliente: document.getElementById('NomeCliente').value,
+                CPF: document.getElementById('CPF').value,
+                Valor: document.getElementById('Valor').value.replace('R$ ', '').replace(',', '.'),
+                DataVencimento: document.getElementById('DataVencimento').value,
+                Status: document.getElementById('Status').value
+            };
+
+            fetch('CR-php/save_account.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log(data.message);
+                    refreshAccountTable();
+                } else {
+                    console.error('Erro ao salvar a conta:', data.error);
+                }
+            })
+            .catch(error => console.error('Erro na requisição:', error));
+        }
+
+        function fetchAccounts() {
+            fetch('CR-php/get_accounts.php')
+            .then(response => response.json())
+            .then(data => {
+                var tableBody = document.getElementById('accountTable').getElementsByTagName('tbody')[0];
+                tableBody.innerHTML = '';
+                data.forEach(account => {
+                    var row = tableBody.insertRow();
+                    row.insertCell(0).innerText = account.id;
+                    row.insertCell(1).innerText = account.nome_cliente;
+                    row.insertCell(2).innerText = account.CPF;
+                    row.insertCell(3).innerText = 'R$ ' + parseFloat(account.valor).toFixed(2).replace('.', ',');
+                    row.insertCell(4).innerText = account.data_vencimento;
+                    row.insertCell(5).innerText = account.status;
+                    var actionsCell = row.insertCell(6);
+                    var editButton = document.createElement('button');
+                    editButton.innerText = 'Editar';
+                    editButton.onclick = () => editAccount(account);
+                    actionsCell.appendChild(editButton);
+
+                    var selectCell = row.insertCell(7);
+                    var checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.value = account.id;
+                    selectCell.appendChild(checkbox);
+                });
+            })
+            .catch(error => console.error('Erro na requisição:', error));
+        }
+        function editAccount(account) {
+            document.getElementById('editID').value = account.id;
+            document.getElementById('editNomeCliente').value = account.nome_cliente;
+            document.getElementById('editCPF').value = account.CPF;
+            document.getElementById('editValor').value = 'R$ ' + parseFloat(account.valor).toFixed(2).replace('.', ',');
+            document.getElementById('editDataVencimento').value = account.data_vencimento;
+            document.getElementById('editStatus').value = account.status;
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        function saveEdit() {
+            var formData = {
+                id: document.getElementById('editID').value,
+                NomeCliente: document.getElementById('editNomeCliente').value,
+                CPF: document.getElementById('editCPF').value,
+                Valor: document.getElementById('editValor').value.replace('R$ ', '').replace(',', '.'),
+                DataVencimento: document.getElementById('editDataVencimento').value,
+                Status: document.getElementById('editStatus').value
+            };
+
+            fetch('CR-php/edit_account.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log(data.message);
+                    closeModal();
+                    refreshAccountTable();
+                } else {
+                    console.error('Erro ao editar a conta:', data.error);
+                }
+            })
+            .catch(error => console.error('Erro na requisição:', error));
+        }
+
+        function deleteSelected() {
+    var checkboxes = document.querySelectorAll('#accountTable tbody input[type="checkbox"]:checked');
+    if (checkboxes.length === 0) {
+        alert('Selecione pelo menos um usuário para excluir.');
+        return;
+    }
+
+    if (confirm(`Tem certeza que deseja excluir ${checkboxes.length} usuário(s)?`)) {
+        var selectedIds = Array.from(checkboxes).map(checkbox => checkbox.value);
+
+        fetch('CR-php/delete_account.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ ids: selectedIds }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Usuários excluídos com sucesso.');
+                fetchAccounts();
+            } else {
+                alert('Erro ao excluir usuários.');
+            }
+        })
+        .catch(error => console.error('Erro na requisição:', error));
+    }
+}
+
+        function refreshAccountTable() {
+            fetchAccounts();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchAccounts();
+        });
+    </script>
+</body>
+</html>

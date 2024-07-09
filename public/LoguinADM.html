@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+         body {
+    font-family: Arial, sans-serif;
+    background-color: rgba(0, 24, 30, 255);
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background-image: url('IMG/Novo Projeto.png');
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    overflow: hidden;
+}
+        html, body {
+            overflow: hidden;
+            height: 100%;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                background-size: cover;
+                background-attachment: fixed;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.8);
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #c8c7c7;
+            margin-top: 0;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        form {
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #c8c7c7;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #292525;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button.botao-entrar {
+            background-color: rgba(19, 55, 72, 255);
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button.botao-entrar:hover {
+            background-color: rgba(28, 53, 57, 255);
+        }
+    </style>
+</head>
+
+<body class="background">
+    <div class="container">
+        <img src="IMG/Logo Do loguin.png" alt="Logo" style="max-width: 50%; height: auto;">
+        <h1>Fazer Login</h1>
+
+        <form id="loginForm">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" autocomplete="username" required><br>
+
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" name="senha" autocomplete="current-password" required><br>
+
+            <button class="botao-entrar" type="button" onclick="fazerLogin()">Entrar</button>
+        </form>
+    </div>
+
+    <script>
+       function fazerLogin() {
+            var email = document.getElementById('email').value;
+            var senha = document.getElementById('senha').value;
+
+            console.log('Tentativa de login:');
+            console.log('Email:', email);
+            console.log('Senha:', senha);
+
+            if (!email || !senha) {
+                alert('Por favor, preencha todos os campos.');
+                return;
+            }
+
+    // Contas a Receber
+    for (var contasAReceberKey in contasAReceber) {
+        if (contasAReceber.hasOwnProperty(contasAReceberKey) && contasAReceber[contasAReceberKey].email === email && contasAReceber[contasAReceberKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Contas a Receber!');
+            alert('Login bem-sucedido como usuário de Contas a Receber!');
+            window.location.href = 'html-ADM/Financeiro-Contabilidade/ContasAReceber.html';
+            return;
+        }
+    }
+
+    // Contas a Pagar
+    for (var contasAPagarKey in contasAPagar) {
+        if (contasAPagar.hasOwnProperty(contasAPagarKey) && contasAPagar[contasAPagarKey].email === email && contasAPagar[contasAPagarKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Contas a Pagar!');
+            alert('Login bem-sucedido como usuário de Contas a Pagar!');
+            window.location.href = 'html-ADM/Financeiro-Contabilidade/ContasAPagar.html';
+            return;
+        }
+    }
+
+    // Fluxo de Caixa-Orçamentos
+    for (var fluxoDeCaixaKey in fluxoDeCaixa) {
+        if (fluxoDeCaixa.hasOwnProperty(fluxoDeCaixaKey) && fluxoDeCaixa[fluxoDeCaixaKey].email === email && fluxoDeCaixa[fluxoDeCaixaKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Fluxo de Caixa!');
+            alert('Login bem-sucedido como usuário de Fluxo de Caixa!');
+            window.location.href = 'html-ADM/Financeiro-Contabilidade/FluxoDeCaixa-Orçamentos.html';
+            return;
+        }
+    }
+    // Relatórios Financeiros-Análise de Custos
+    for (var relatoriosFinanceirosKey in relatoriosFinanceiros) {
+        if (relatoriosFinanceiros.hasOwnProperty(relatoriosFinanceirosKey) && relatoriosFinanceiros[relatoriosFinanceirosKey].email === email && relatoriosFinanceiros[relatoriosFinanceirosKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Relatórios Financeiros!');
+            alert('Login bem-sucedido como usuário de Relatórios Financeiros!');
+            window.location.href = 'html-ADM/Financeiro-Contabilidade/RelatoriosFinanceiros-AnáliseDeCustos.html';
+            return;
+        }
+    }
+
+    // Cadastro de Funcionários
+    for (var key in CadastroFuncionarios) {
+                if (CadastroFuncionarios.hasOwnProperty(key) && CadastroFuncionarios[key].email === email && CadastroFuncionarios[key].senha === senha) {
+                    console.log('Login bem-sucedido como usuário de Módulos de Recursos Humanos!');
+                    alert('Login bem-sucedido como usuário de Módulos de Recursos Humanos!');
+                    window.location.href = 'html-ADM/RecursosHumanos/CadastroFuncionarios.html';
+                    return;
+                }
+            }
+
+    // Gerenciamento de folha de pagamento
+    for (var gerenciamentoFolhaPagamentoKey in gerenciamentoFolhaPagamento) {
+        if (gerenciamentoFolhaPagamento.hasOwnProperty(gerenciamentoFolhaPagamentoKey) && gerenciamentoFolhaPagamento[gerenciamentoFolhaPagamentoKey].email === email && gerenciamentoFolhaPagamento[gerenciamentoFolhaPagamentoKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Gerenciamento de Folha de Pagamento!');
+            alert('Login bem-sucedido como usuário de Gerenciamento de Folha de Pagamento!');
+            window.location.href = 'html-ADM/RecursosHumanos/GerenciamentoFolhaPagamento.html';
+            return;
+        }
+    }
+
+    // Controle de horas trabalhadas
+    for (var controleHorasTrabalhadasKey in controleHorasTrabalhadas) {
+        if (controleHorasTrabalhadas.hasOwnProperty(controleHorasTrabalhadasKey) && controleHorasTrabalhadas[controleHorasTrabalhadasKey].email === email && controleHorasTrabalhadas[controleHorasTrabalhadasKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Controle de Horas Trabalhadas!');
+            alert('Login bem-sucedido como usuário de Controle de Horas Trabalhadas!');
+            window.location.href = 'html-ADM/RecursosHumanos/ControleHorasTrabalhadas.html';
+            return;
+        }
+    }
+
+    // Administração de benefícios e férias
+    for (var administracaoBeneficiosFeriasKey in administracaoBeneficiosFerias) {
+        if (administracaoBeneficiosFerias.hasOwnProperty(administracaoBeneficiosFeriasKey) && administracaoBeneficiosFerias[administracaoBeneficiosFeriasKey].email === email && administracaoBeneficiosFerias[administracaoBeneficiosFeriasKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Administração de Benefícios e Férias!');
+            alert('Login bem-sucedido como usuário de Administração de Benefícios e Férias!');
+            window.location.href = 'html-ADM/RecursosHumanos/AdministracaoBeneficiosFerias.html';
+            return;
+        }
+    }
+
+    // Controle de usuários e permissões
+    for (var controleUsuariosKey in controleUsuarios) {
+        if (controleUsuarios.hasOwnProperty(controleUsuariosKey) && controleUsuarios[controleUsuariosKey].email === email && controleUsuarios[controleUsuariosKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Controle de Usuários e Permissões!');
+            alert('Login bem-sucedido como usuário de Controle de Usuários e Permissões!');
+            window.location.href = 'html-ADM/AdministraçãoGeral/ControleUsuarios.html';
+            return;
+        }
+    }
+
+    // Gerenciamento de projetos e atividades
+    for (var gerenciamentoProjetosKey in gerenciamentoProjetos) {
+        if (gerenciamentoProjetos.hasOwnProperty(gerenciamentoProjetosKey) && gerenciamentoProjetos[gerenciamentoProjetosKey].email === email && gerenciamentoProjetos[gerenciamentoProjetosKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Gerenciamento de Projetos e Atividades!');
+            alert('Login bem-sucedido como usuário de Gerenciamento de Projetos e Atividades!');
+            window.location.href = 'html-ADM/AdministraçãoGeral/GerenciamentoProjetos.html';
+            return;
+        }
+    }
+
+    // Relatórios de desempenho global
+    for (var relatoriosDesempenhoGlobalKey in relatoriosDesempenhoGlobal) {
+        if (relatoriosDesempenhoGlobal.hasOwnProperty(relatoriosDesempenhoGlobalKey) && relatoriosDesempenhoGlobal[relatoriosDesempenhoGlobalKey].email === email && relatoriosDesempenhoGlobal[relatoriosDesempenhoGlobalKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Relatórios de Desempenho Global!');
+            alert('Login bem-sucedido como usuário de Relatórios de Desempenho Global!');
+            window.location.href = 'html-ADM/AdministraçãoGeral/RelatoriosDesempenhoGlobal.html';
+            return;
+        }
+    }
+
+    // Controle de ativos de TI
+    for (var controleAtivosTIKey in controleAtivosTI) {
+        if (controleAtivosTI.hasOwnProperty(controleAtivosTIKey) && controleAtivosTI[controleAtivosTIKey].email === email && controleAtivosTI[controleAtivosTIKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Controle de Ativos de TI!');
+            alert('Login bem-sucedido como usuário de Controle de Ativos de TI!');
+            window.location.href = 'html-ADM/TI/ControleAtivosTI.html';
+            return;
+        }
+    }
+
+    // Registro e resolução de tickets de suporte
+    for (var ticketsSuporteKey in ticketsSuporte) {
+        if (ticketsSuporte.hasOwnProperty(ticketsSuporteKey) && ticketsSuporte[ticketsSuporteKey].email === email && ticketsSuporte[ticketsSuporteKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Registro e Resolução de Tickets de Suporte!');
+            alert('Login bem-sucedido como usuário de Registro e Resolução de Tickets de Suporte!');
+            window.location.href = 'html-ADM/TI/TicketsSuporte.html';
+            return;
+        }
+    }
+
+    // Segurança e acesso a sistemas
+    for (var segurançaAcessoKey in segurançaAcesso) {
+        if (segurançaAcesso.hasOwnProperty(segurançaAcessoKey) && segurançaAcesso[segurançaAcessoKey].email === email && segurançaAcesso[segurançaAcessoKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Segurança e acesso a sistemas!');
+            alert('Login bem-sucedido como usuário de Segurança e acesso a sistemas!');
+            window.location.href = 'html-ADM/TI/SegurançaAcesso.html';
+            return;
+        }
+    }
+
+    // Acompanhamento de campanhas de marketing
+    for (var acompanhamentoMarketingKey in acompanhamentoMarketing) {
+        if (acompanhamentoMarketing.hasOwnProperty(acompanhamentoMarketingKey) && acompanhamentoMarketing[acompanhamentoMarketingKey].email === email && acompanhamentoMarketing[acompanhamentoMarketingKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Módulo de Compras!');
+            alert('Login bem-sucedido como usuário de Módulo de Compras!');
+            window.location.href = 'html-ADM/Marketing-Vendas/AcompanhamentoMarketing.html';
+            return;
+        }
+    }
+
+    // Registro de vendas e relatórios de desempenho
+    for (var registroVendasKey in registroVendas) {
+        if (registroVendas.hasOwnProperty(registroVendasKey) && registroVendas[registroVendasKey].email === email && registroVendas[registroVendasKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Gestão de Fornecedores!');
+            alert('Login bem-sucedido como usuário de Gestão de Fornecedores!');
+            window.location.href = 'html-ADM/Marketing-Vendas/RegistroVendas.html';
+            return;
+        }
+    }
+
+    // Gestão de leads e clientes
+    for (var gestaoLeadsClientesKey in gestaoLeadsClientes) {
+        if (gestaoLeadsClientes.hasOwnProperty(gestaoLeadsClientesKey) && gestaoLeadsClientes[gestaoLeadsClientesKey].email === email && gestaoLeadsClientes[gestaoLeadsClientesKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Relatórios de Compras!');
+            alert('Login bem-sucedido como usuário de Relatórios de Compras!');
+            window.location.href = 'html-ADM/Marketing-Vendas/GestaoLeadsClientes.html';
+            return;
+        }
+    }
+
+
+    console.log('Falha no login. Verifique suas credenciais.');
+    alert('Falha no login. Verifique suas credenciais.');
+}
+    </script>
+
+    <script>
+        var contasAReceber = {
+    'usuario1': { email: 'contasareceber1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'contasareceber2@fsaojorge.com.br', senha: '123' }
+};
+
+var contasAPagar = {
+    'usuario1': { email: 'contasapagar1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'contasapagar2@fsaojorge.com.br', senha: '123' }
+};
+
+var fluxoDeCaixa = {
+    'usuario1': { email: 'fluxodecaixa1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'fluxodecaixa2@fsaojorge.com.br', senha: '123' }
+};
+
+var relatoriosFinanceiros = {
+    'usuario1': { email: 'relatoriosfinanceiros1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'relatoriosfinanceiros2@fsaojorge.com.br', senha: '123' }
+};
+
+var CadastroFuncionarios = {
+    'usuario1': { email: 'cadastrofuncionarios1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'cadastrofuncionarios2@fsaojorge.com.br', senha: '123' }
+};
+
+var gerenciamentoFolhaPagamento = {
+    'usuario1': { email: 'folhapagamento1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'folhapagamento2@fsaojorge.com.br', senha: '123' }
+};
+
+var controleHorasTrabalhadas = {
+    'usuario1': { email: 'controlehoras1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'controlehoras2@fsaojorge.com.br', senha: '123' }
+};
+
+var administracaoBeneficiosFerias = {
+    'usuario1': { email: 'beneficiosferias1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'beneficiosferias2@fsaojorge.com.br', senha: '123' }
+};
+
+var controleUsuarios = {
+    'usuario1': { email: 'controleusuarios1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'controleusuarios2@fsaojorge.com.br', senha: '123' }
+};
+
+var gerenciamentoProjetos = {
+    'usuario1': { email: 'gerenciamentoprojetos1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'gerenciamentoprojetos2@fsaojorge.com.br', senha: '123' }
+};
+
+var relatoriosDesempenhoGlobal = {
+    'usuario1': { email: 'relatoriosdesempenhoglobal1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'relatoriosdesempenhoglobal2@fsaojorge.com.br', senha: '123' }
+};
+
+var controleAtivosTI = {
+    'usuario1': { email: 'controleativosti1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'controleativosti2@fsaojorge.com.br', senha: '123' }
+};
+
+var ticketsSuporte = {
+    'usuario1': { email: 'ticketssuporte1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'ticketssuporte2@fsaojorge.com.br', senha: '123' }
+};
+
+var segurançaAcesso = {
+    'usuario1': { email: 'segurancasistemas1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'segurancasistemas2@fsaojorge.com.br', senha: '123' }
+};
+
+var acompanhamentoMarketing = {
+    'usuario1': { email: 'acompanhamentomarketing1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'acompanhamentomarketing2@fsaojorge.com.br', senha: '123' }
+};
+
+var registroVendas = {
+    'usuario1': { email: 'registrovendas1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'registrovendas2@fsaojorge.com.br', senha: '123' }
+};
+
+var gestaoLeadsClientes = {
+    'usuario1': { email: 'gestaoleadsclientes1@fsaojorge.com.br', senha: '123' },
+    'usuario2': { email: 'gestaoleadsclientes2@fsaojorge.com.br', senha: '123' }
+};
+
+    </script>
+</body>
+
+</html>
