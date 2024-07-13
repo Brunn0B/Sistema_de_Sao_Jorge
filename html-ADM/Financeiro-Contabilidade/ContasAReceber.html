@@ -25,6 +25,7 @@
         }
     
         .container {
+            color: white;
             width: 100%;
             max-width: 1200px;
             background-color: #393838;
@@ -189,23 +190,35 @@
             background-color: #ddd;
             color: black;
         }
-    
+
+        .logo {
+            height: 50px;
+            width: auto;
+            transition: transform 0.3s ease;
+            float: left;
+            margin-left: 10px;
+        }
+        .logo:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <a href="/Sistema_de_Sao_Jorge/public/-TelaDoAdministrador.html"><i class="fas fa-home"></i> Home</a>
-        <a href=""><i class="fas fa-file-pdf"></i>Relatorio PDF</a>
-        <a href="/Sistema_de_Sao_Jorge/public/SuporteUsuarios.html"><i class="fas fa-headset"></i>Suporte</a>
-        <a href="ContasAPagar.html"><i class="fas fa-file-invoice-dollar"></i>Contas a Pagar</a>
-        <a href="RelatoriosFinanceiros-AnáliseDeCustos.html"><i class="fas fa-file-invoice-dollar"></i>Relatórios</a>
-        <a href="#about"><i class="fas fa-question-circle"></i>Manual do Usuário</a>
-        
-        
-        </div>
+        <img src="/Sistema_de_Sao_Jorge/IMG/F-Sao-jorge.png" alt="Logo" class="logo">
+        <a href="/Sistema_de_Sao_Jorge/-TelaDoAdministrador.html"><i class="fas fa-home"></i> Home</a>
+        <a href=""><i class="fas fa-file-pdf"></i> Relatório PDF</a>
+        <a href="/Sistema_de_Sao_Jorge/SuporteUsuarios.html"><i class="fas fa-headset"></i> Suporte</a>
+        <a href="ContasAPagar.html"><i class="fas fa-file-invoice-dollar"></i> Contas a Pagar</a>
+        <a href="Orçamentos.html"><i class="fas fa-file-invoice-dollar"></i>Orçamentos</a>
+        <a href="RelatoriosFinanceiros-AnáliseDeCustos.html"><i class="fas fa-file-invoice-dollar"></i> Relatórios</a>
+        <a href="#about"><i class="fas fa-question-circle"></i> Manual do Usuário</a>
+    </div>
     </div>
     <div class="container">
+        
         <h1><br><br>Sistema de Contas a Receber</h1>
+        
         
         <form id="accountForm">
             <label for="IDCliente">ID do Cliente:</label>
