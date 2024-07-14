@@ -266,7 +266,6 @@
         </table>
     </div>
 
-    <!-- Modal de Edição -->
     <div class="modal" id="editModal">
         <div class="modal-header">
             <h2>Editar Conta a Receber</h2>
@@ -296,52 +295,53 @@
             <button type="button" onclick="saveEdit()">Salvar</button>
         </form>
     </div>
-
-    <script>
-        var dropdownVisible = false;
-
-        function toggleDropdown() {
-            var dropdown = document.getElementById("servicos");
-            dropdownVisible = !dropdownVisible;
-            if (dropdownVisible) {
-                dropdown.style.display = "block";
-            } else {
-                dropdown.style.display = "none";
-            }
-        }
-
-        function navigateToService() {
-            var dropdown = document.getElementById("servicos");
-            var selectedOption = dropdown.options[dropdown.selectedIndex].value;
-            if (selectedOption) {
-                window.location.href = selectedOption;
-            }
-        }
-    </script>
-
     <script>
         document.getElementById('Valor').addEventListener('input', function() {
             var valor = this.value.replace(/\D/g, '');
-            valor = (valor / 100).toFixed(2);
+            valor = (parseFloat(valor) / 100).toFixed(2);
             this.value = 'R$ ' + valor.replace('.', ',');
         });
-
+    
         document.getElementById('editValor').addEventListener('input', function() {
             var valor = this.value.replace(/\D/g, '');
-            valor = (valor / 100).toFixed(2);
+            valor = (parseFloat(valor) / 100).toFixed(2);
             this.value = 'R$ ' + valor.replace('.', ',');
         });
-
+    
+        document.getElementById('CPF').addEventListener('input', function() {
+            var cpf = this.value.replace(/\D/g, '');
+            cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+            this.value = cpf;
+        });
+    
+        document.getElementById('editCPF').addEventListener('input', function() {
+            var cpf = this.value.replace(/\D/g, '');
+            cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+            this.value = cpf;
+        });
+    
         function submitAccount() {
+            var cpfValue = document.getElementById('CPF').value.replace(/[^\d]/g, '');
+            if (cpfValue.length !== 11) {
+                alert('CPF deve ter exatamente 11 dígitos.');
+                return;
+            }
+    
+            var dataVencimento = document.getElementById('DataVencimento').value;
+            if (!dataVencimento) {
+                alert('Informe a data de vencimento.');
+                return;
+            }
+    
             var formData = {
                 IDCliente: document.getElementById('IDCliente').value,
                 NomeCliente: document.getElementById('NomeCliente').value,
-                CPF: document.getElementById('CPF').value,
-                Valor: document.getElementById('Valor').value.replace('R$ ', '').replace(',', '.'),
-                DataVencimento: document.getElementById('DataVencimento').value,
+                CPF: cpfValue,
+                Valor: parseFloat(document.getElementById('Valor').value.replace('R$ ', '').replace(',', '.')).toFixed(2),
+                DataVencimento: dataVencimento,
                 Status: document.getElementById('Status').value
             };
-
+    
             fetch('CR-php/save_account.php', {
                 method: 'POST',
                 headers: {
@@ -360,7 +360,7 @@
             })
             .catch(error => console.error('Erro na requisição:', error));
         }
-
+    
         function fetchAccounts() {
             fetch('CR-php/get_accounts.php')
             .then(response => response.json())
@@ -371,7 +371,7 @@
                     var row = tableBody.insertRow();
                     row.insertCell(0).innerText = account.id;
                     row.insertCell(1).innerText = account.nome_cliente;
-                    row.insertCell(2).innerText = account.CPF;
+                    row.insertCell(2).innerText = account.CPF.replace(/[^\d]/g, ''); // Remove caracteres não numéricos
                     row.insertCell(3).innerText = 'R$ ' + parseFloat(account.valor).toFixed(2).replace('.', ',');
                     row.insertCell(4).innerText = account.data_vencimento;
                     row.insertCell(5).innerText = account.status;
@@ -380,7 +380,7 @@
                     editButton.innerText = 'Editar';
                     editButton.onclick = () => editAccount(account);
                     actionsCell.appendChild(editButton);
-
+    
                     var selectCell = row.insertCell(7);
                     var checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
@@ -390,30 +390,43 @@
             })
             .catch(error => console.error('Erro na requisição:', error));
         }
+    
         function editAccount(account) {
             document.getElementById('editID').value = account.id;
             document.getElementById('editNomeCliente').value = account.nome_cliente;
-            document.getElementById('editCPF').value = account.CPF;
+            document.getElementById('editCPF').value = account.CPF.replace(/[^\d]/g, '');
             document.getElementById('editValor').value = 'R$ ' + parseFloat(account.valor).toFixed(2).replace('.', ',');
             document.getElementById('editDataVencimento').value = account.data_vencimento;
             document.getElementById('editStatus').value = account.status;
             document.getElementById('editModal').style.display = 'block';
         }
-
+    
         function closeModal() {
             document.getElementById('editModal').style.display = 'none';
         }
-
+    
         function saveEdit() {
+            var cpfValue = document.getElementById('editCPF').value.replace(/[^\d]/g, '');
+            if (cpfValue.length !== 11) {
+                alert('CPF deve ter exatamente 11 dígitos.');
+                return;
+            }
+    
+            var dataVencimento = document.getElementById('editDataVencimento').value;
+            if (!dataVencimento) {
+                alert('Informe a data de vencimento.');
+                return;
+            }
+    
             var formData = {
                 id: document.getElementById('editID').value,
                 NomeCliente: document.getElementById('editNomeCliente').value,
-                CPF: document.getElementById('editCPF').value,
-                Valor: document.getElementById('editValor').value.replace('R$ ', '').replace(',', '.'),
-                DataVencimento: document.getElementById('editDataVencimento').value,
+                CPF: cpfValue,
+                Valor: parseFloat(document.getElementById('editValor').value.replace('R$ ', '').replace(',', '.')).toFixed(2),
+                DataVencimento: dataVencimento,
                 Status: document.getElementById('editStatus').value
             };
-
+    
             fetch('CR-php/edit_account.php', {
                 method: 'POST',
                 headers: {
@@ -433,44 +446,89 @@
             })
             .catch(error => console.error('Erro na requisição:', error));
         }
-
+    
         function deleteSelected() {
-    var checkboxes = document.querySelectorAll('#accountTable tbody input[type="checkbox"]:checked');
-    if (checkboxes.length === 0) {
-        alert('Selecione pelo menos um usuário para excluir.');
-        return;
-    }
-
-    if (confirm(`Tem certeza que deseja excluir ${checkboxes.length} usuário(s)?`)) {
-        var selectedIds = Array.from(checkboxes).map(checkbox => checkbox.value);
-
-        fetch('CR-php/delete_account.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ ids: selectedIds }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Usuários excluídos com sucesso.');
-                fetchAccounts();
-            } else {
-                alert('Erro ao excluir usuários.');
+            var checkboxes = document.querySelectorAll('#accountTable tbody input[type="checkbox"]:checked');
+            if (checkboxes.length === 0) {
+                alert('Selecione pelo menos uma conta para excluir.');
+                return;
             }
-        })
-        .catch(error => console.error('Erro na requisição:', error));
-    }
-}
-
+    
+            if (confirm(`Tem certeza que deseja excluir ${checkboxes.length} conta(s)?`)) {
+                var selectedIds = Array.from(checkboxes).map(checkbox => checkbox.value);
+    
+                fetch('CR-php/delete_account.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ ids: selectedIds }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Contas excluídas com sucesso.');
+                        fetchAccounts();
+                    } else {
+                        alert('Erro ao excluir contas.');
+                    }
+                })
+                .catch(error => console.error('Erro na requisição:', error));
+            }
+        }
+    
+        function validaCPF(cpf) {
+            cpf = cpf.replace(/[^\d]/g, '');
+    
+            if (cpf.length !== 11) {
+                return false;
+            }
+            if (/^(\d)\1{10}$/.test(cpf)) {
+                return false;
+            }
+    
+            var soma = 0;
+            var resto;
+            for (var i = 1; i <= 9; i++) {
+                soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+            }
+            resto = (soma * 10) % 11;
+    
+            if (resto === 10 || resto === 11) {
+                resto = 0;
+            }
+    
+            if (resto !== parseInt(cpf.substring(9, 10))) {
+                return false;
+            }
+    
+            soma = 0;
+            for (var i = 1; i <= 10; i++) {
+                soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+            }
+            resto = (soma * 10) % 11;
+    
+            if (resto === 10 || resto === 11) {
+                resto = 0;
+            }
+    
+            if (resto !== parseInt(cpf.substring(10, 11))) {
+                return false;
+            }
+    
+            cpf = cpf.substring(0, 3) + '.' + cpf.substring(3, 6) + '.' + cpf.substring(6, 9) + '-' + cpf.substring(9, 11);
+    
+            return cpf;
+        }
+    
         function refreshAccountTable() {
             fetchAccounts();
         }
-
+    
         document.addEventListener('DOMContentLoaded', function() {
             fetchAccounts();
         });
     </script>
+    
 </body>
 </html>
