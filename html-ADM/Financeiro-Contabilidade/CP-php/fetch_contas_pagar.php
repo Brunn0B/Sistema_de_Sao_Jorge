@@ -10,28 +10,23 @@ if ($conn->connect_error) {
     die("Conexão falhou: " . $conn->connect_error);
 }
 
-$sql = "SELECT cp.id, f.nome, cp.valor, cp.data_vencimento, cp.status 
-        FROM contas_pagar cp
-        INNER JOIN fornecedores f ON cp.fornecedor_id = f.id
-        ORDER BY cp.data_vencimento";
+$sql = "SELECT cp.id, f.nome AS fornecedor_nome, f.cnpj AS fornecedor_cnpj, cp.valor, cp.data_vencimento, cp.status, cp.extornado, cp.data_extorno 
+        FROM contas_pagar cp 
+        INNER JOIN fornecedores f ON cp.fornecedor_id = f.id";
+
 $result = $conn->query($sql);
 
-$contasPagar = array();
-
 if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $conta = array(
-            "id" => $row["id"],
-            "nome" => $row["nome"],
-            "valor" => $row["valor"],
-            "data_vencimento" => $row["data_vencimento"],
-            "status" => $row["status"]
-        );
-        array_push($contasPagar, $conta);
-    }
-}
+    $contas_pagar = array();
 
-echo json_encode($contasPagar);
+    while ($row = $result->fetch_assoc()) {
+        $contas_pagar[] = $row;
+    }
+
+    echo json_encode($contas_pagar);
+} else {
+    echo json_encode(array());
+}
 
 $conn->close();
 ?>

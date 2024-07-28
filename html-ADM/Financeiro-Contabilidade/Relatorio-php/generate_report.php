@@ -4,10 +4,8 @@ $username = "root";
 $password = "";
 $dbname = "financeiro_db";
 
-// Cria a conexão
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Verifica a conexão
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
@@ -22,9 +20,14 @@ switch ($reportType) {
     case 'analise_custos':
         $sql = "SELECT * FROM analise_custos WHERE data >= '$startDate' AND data <= '$endDate'";
         break;
-    case 'contas_pagar':
-        $sql = "SELECT * FROM contas_pagar WHERE data_vencimento >= '$startDate' AND data_vencimento <= '$endDate'";
-        break;
+        case 'contas_pagar':
+            $sql = "SELECT cp.id, f.nome AS fornecedor_nome, f.cnpj AS fornecedor_cnpj, cp.valor, cp.data_vencimento, cp.status, cp.extornado, cp.data_extorno 
+                    FROM contas_pagar cp 
+                    LEFT JOIN fornecedores f ON cp.fornecedor_id = f.id
+                    WHERE cp.data_vencimento >= '$startDate' AND cp.data_vencimento <= '$endDate'";
+            break;
+        
+        
     case 'contas_receber':
         $sql = "SELECT * FROM contas_receber WHERE data_vencimento >= '$startDate' AND data_vencimento <= '$endDate'";
         break;

@@ -315,27 +315,27 @@
         }
 
         function loadContasPagar() {
-            fetch('CP-php/fetch_contas_pagar.php')
-                .then(response => response.json())
-                .then(data => {
-                    const contasTable = document.getElementById('contasTable').getElementsByTagName('tbody')[0];
-                    contasTable.innerHTML = '';
-                    data.forEach(conta => {
-                        let row = contasTable.insertRow();
-                        row.innerHTML = `
-                            <td>${conta.id}</td>
-                            <td>${conta.nome}</td>
-                            <td>R$ ${conta.valor}</td>
-                            <td>${conta.data_vencimento}</td>
-                            <td>${conta.status}</td>
-                            <td>
-                                <button onclick="openModalEditar(${conta.id})">Editar</button>
-                                <button onclick="extornarConta(${conta.id})">Extornar</button>
-                            </td>
-                        `;
-                    });
-                });
-        }
+    fetch('CP-php/fetch_contas_pagar.php')
+        .then(response => response.json())
+        .then(data => {
+            const contasTable = document.getElementById('contasTable').getElementsByTagName('tbody')[0];
+            contasTable.innerHTML = '';
+            data.forEach(conta => {
+                let row = contasTable.insertRow();
+                row.innerHTML = `
+                    <td>${conta.id}</td>
+                    <td>${conta.fornecedor_nome} - ${conta.fornecedor_cnpj}</td>
+                    <td>R$ ${conta.valor}</td>
+                    <td>${conta.data_vencimento}</td>
+                    <td>${conta.status}</td>
+                    <td>
+                        <button onclick="openModalEditar(${conta.id})">Editar</button>
+                        <button onclick="extornarConta(${conta.id})">Extornar</button>
+                    </td>
+                `;
+            });
+        });
+}
 
         function openModalEditar(id) {
             fetch('CP-php/fetch_conta_pagar.php?id=' + id)
