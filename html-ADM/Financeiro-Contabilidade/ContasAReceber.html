@@ -167,7 +167,6 @@
             background-color: #bd2130;
         }
     
-        /* Navbar */
         .navbar {
             background-color: #000000;
             overflow: hidden;
@@ -201,6 +200,46 @@
         .logo:hover {
             transform: scale(1.1);
         }
+
+        .modal2 {
+            display: none;
+            position: left;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 800px;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content2 {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .BotaoFechar {
+            color: #f7f6f6;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .BotaoFechar:hover,
+        .BotaoFechar:focus {
+            color: rgb(255, 0, 0);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #VisualizarPDF {
+            width: 600px;
+            height: 500px;
+            border: none;
+        }
+
     </style>
 </head>
 <body>
@@ -212,9 +251,16 @@
         <a href="FluxoDeCaixa.html"><i class="fas fa-chart-line"></i>Fluxo de Caixa</a>
         <a href="Orçamentos.html"><i class="fas fa-file-invoice-dollar"></i>Orçamentos</a>
         <a href="RelatoriosFinanceiros-AnáliseDeCustos.html"><i class="fas fa-file-invoice-dollar"></i>Relatórios - Analise de Custo</a>
-        <a href="#about"><i class="fas fa-question-circle"></i> Manual do Usuário</a>
+        <a href="#about" onclick="carregarAtividade('/Sistema_de_Sao_Jorge/TesteManual.pdf')"><i class="fas fa-question-circle"></i> Manual do Usuário</a>
     </div>
+    
+    <div id="pdfModal" class="modal2" onclick="fecharModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="BotaoFechar" onclick="fecharModal()">&times;</span>
+            <iframe id="VisualizarPDF"></iframe>
+        </div>
     </div>
+
     <div class="container">
         
         <h1><br><br>Sistema de Contas a Receber</h1>
@@ -295,6 +341,38 @@
             <button type="button" onclick="saveEdit()">Salvar</button>
         </form>
     </div>
+
+    
+    <script>
+        async function carregarAtividade(url) {
+           try {
+               const response = await fetch(url);
+               if (!response.ok) {
+                   throw new Error('Não foi possível carregar a atividade.');
+               }
+               const blob = await response.blob();
+               const objectURL = URL.createObjectURL(blob);
+
+               abrirModal(objectURL);
+
+           } catch (error) {
+               console.error(error.message);
+           }
+       }
+
+       function abrirModal(url) {
+           const modal = document.getElementById('pdfModal');
+           const VisualizarPDF = document.getElementById('VisualizarPDF');
+
+           VisualizarPDF.src = url;
+           modal.style.display = 'block';
+       }
+       function fecharModal() {
+           const modal = document.getElementById('pdfModal');
+           modal.style.display = 'none';
+       }
+   </script>
+   
     <script>
         document.getElementById('Valor').addEventListener('input', function() {
             var valor = this.value.replace(/\D/g, '');
