@@ -1,11 +1,11 @@
-Título
+Sistma de sao jorge 
 ===
-Resumo: xxx
+Resumo: sistema operaaçional criado com o intuito de diminuir  o tempo de trabalho, e criar mobilidade e performance.
 
 ## Informações do Artigo
-- Título:  `nome do artigo`
+- Título:  `SSJ`
 - Autores:  `Brunno de Brito Barros`
-![Logo do Sistema](./public/IMG/image.png)
+![Sistema inicial(Index)](/public/IMG/image.png)
 
 ## Instalação e Dependências
 - Node.js (para rodar o Electron)

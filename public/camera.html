@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCR e Captura de Imagem</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      padding: 10px;
+      background: #3f51b5;
+      color: white;
+      text-align: center;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+    }
+    .camera-section, .output-section {
+      flex: 1;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      background: #f9f9f9;
+    }
+    .camera-section {
+      align-items: center;
+      justify-content: center;
+    }
+    video {
+      width: 100%;
+      height: auto;
+    }
+    .controls {
+      padding: 10px;
+      display: flex;
+      justify-content: space-around;
+    }
+    .output-section {
+      padding: 10px;
+    }
+    .data-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .data-options label {
+      flex: 1;
+      min-width: 150px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    .data-options input {
+      margin-right: 10px;
+    }
+    textarea {
+      flex: 1;
+      width: 100%;
+      resize: none;
+      padding: 10px;
+      font-size: 14px;
+    }
+    button {
+      padding: 10px 15px;
+      background: #3f51b5;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #303f9f;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>OCR e Captura de Imagem</h1>
+  </header>
+  <main>
+    <!-- Seção da câmera -->
+    <div class="camera-section">
+      <video id="video" autoplay playsinline></video>
+      <div class="controls">
+        <button id="capture-btn">Capturar</button>
+        <button id="upload-btn" disabled>Enviar</button>
+      </div>
+      <canvas id="canvas" style="display: none;"></canvas>
+      <div class="qr-code">
+        <h3>Acesse pelo celular</h3>
+        <div id="qrcode"></div>
+        <a id="link" href="#" target="_blank">Abrir no celular</a>
+      </div>
+    </div>
+
+    <!-- Seção de dados digitalizados -->
+    <div class="output-section">
+      <h2>Dados Digitalizados</h2>
+      <div class="data-options">
+        <label><input type="checkbox" id="nome" /> Nome</label>
+        <label><input type="checkbox" id="cep" /> CEP</label>
+        <label><input type="checkbox" id="endereco" /> Endereço Completo</label>
+        <label><input type="checkbox" id="rg" /> RG</label>
+        <label><input type="checkbox" id="cpf" /> CPF</label>
+        <label><input type="checkbox" id="telefone" /> Telefone</label>
+      </div>
+      <textarea id="output" placeholder="Os dados digitalizados aparecerão aqui..." rows="10"></textarea>
+      <div class="controls">
+        <button id="export-btn" disabled>Exportar para Planilha</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- QRCode Biblioteca -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <!-- Socket.IO -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const ngrokUrl = "http://localhost:3000"; // Substitua pelo endereço do ngrok
+
+    // Geração do QR Code
+    QRCode.toCanvas(document.getElementById("qrcode"), ngrokUrl, function (error) {
+      if (error) console.error(error);
+      console.log("QR Code gerado com sucesso!");
+    });
+
+    const linkElement = document.getElementById("link");
+    linkElement.href = ngrokUrl;
+    linkElement.innerText = "Clique aqui para acessar no celular";
+
+    // Configuração de câmera
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const outputArea = document.getElementById("output");
+    const socket = io(); // Conecta ao servidor via Socket.IO
+
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+  .then((stream) => console.log("Câmera conectada"))
+  .catch((err) => console.error("Erro ao acessar câmera:", err));
+
+    navigator.mediaDevices
+      .getUserMedia({ video: { facingMode: "environment" } })
+      .then((stream) => {
+        video.srcObject = stream;
+        video.play();
+
+        setInterval(() => {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const frame = canvas.toDataURL("image/webp");
+  socket.emit("stream", frame); // Envia o quadro para o servidor
+}, 100);
+
+socket.on("stream", (data) => {
+  console.log("Recebido quadro:", data.slice(0, 30)); // Exibe parte do frame no console
+});
+
+const videoElement = document.getElementById("video");
+socket.on("stream", (data) => {
+  const image = new Image();
+  image.src = data;
+  image.onload = () => {
+    const context = videoElement.getContext("2d");
+    context.drawImage(image, 0, 0, videoElement.width, videoElement.height);
+  };
+});
+
+        // Enviar quadros para o servidor
+        const context = canvas.getContext("2d");
+        setInterval(() => {
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const frame = canvas.toDataURL("image/webp");
+          socket.emit("stream", frame); // Envia o quadro para o servidor
+        }, 100); // Envia 10 quadros por segundo
+      })
+      .catch((err) => {
+        console.error("Erro ao acessar câmera:", err);
+      });
+
+    // Processamento OCR
+    async function processFrame() {
+      const context = canvas.getContext("2d");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      // Captura do frame
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = canvas.toDataURL("image/png");
+
+      // Envia para OCR no servidor
+      try {
+        const response = await fetch(`${ngrokUrl}/upload`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: imageData }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          outputArea.value = data.text;
+        } else {
+          console.error("OCR falhou:", data.message);
+        }
+      } catch (err) {
+        console.error("Erro ao processar quadro:", err);
+      }
+
+      requestAnimationFrame(processFrame);
+    }
+
+    video.addEventListener("play", () => {
+      processFrame();
+    });
+  </script>
+</body>
+</html>

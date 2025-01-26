@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+         body {
+    font-family: Arial, sans-serif;
+    background-color: rgba(0, 24, 30, 255);
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background-image: url('IMG/Novo Projeto.png');
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    overflow: hidden;
+}
+        html, body {
+            overflow: hidden;
+            height: 100%;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                background-size: cover;
+                background-attachment: fixed;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.8);
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #c8c7c7;
+            margin-top: 0;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        form {
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #c8c7c7;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #292525;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button.botao-entrar {
+            background-color: rgba(19, 55, 72, 255);
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button.botao-entrar:hover {
+            background-color: rgba(28, 53, 57, 255);
+        }
+    </style>
+</head>
+
+<body class="background">
+    <div class="container">
+        <img src="IMG/Logo Do loguin.png" alt="Logo" style="max-width: 50%; height: auto;">
+        <h1>Fazer Login</h1>
+
+        <form id="loginForm">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" autocomplete="username" required><br>
+
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" name="senha" autocomplete="current-password" required><br>
+
+            <button class="botao-entrar" type="button" onclick="fazerLogin()">Entrar</button>
+        </form>
+    </div>
+
+    <script>
+       function fazerLogin() {
+    var email = document.getElementById('email').value;
+    var senha = document.getElementById('senha').value;
+
+    console.log('Tentativa de login:');
+    console.log('Email:', email);
+    console.log('Senha:', senha);
+
+    if (!email || !senha) {
+        alert('Por favor, preencha todos os campos.');
+        return;
+    }
+
+    for (var VendasComprasKey in VendasCompras) {
+        if (VendasCompras.hasOwnProperty(VendasComprasKey) && VendasCompras[VendasComprasKey].email === email && VendasCompras[VendasComprasKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Contas a Pagar!');
+            alert('Login bem-sucedido como usuário de Contas a Pagar!');
+            window.location.href = 'TelaDoVendasCompras.html';
+            return;
+        }
+    }
+
+    for (var RecursosHumanosKey in RecursosHumanos) {
+        if (RecursosHumanos.hasOwnProperty(RecursosHumanosKey) && RecursosHumanos[RecursosHumanosKey].email === email && RecursosHumanos[RecursosHumanosKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Contas a Pagar!');
+            alert('Login bem-sucedido como usuário de Contas a Pagar!');
+            window.location.href = 'TelaDoRecursosHumanos.html';
+            return;
+        }
+    }
+
+    for (var AtendimentoClientKey in AtendimentoClient) {
+        if (AtendimentoClient.hasOwnProperty(AtendimentoClientKey) && AtendimentoClient[AtendimentoClientKey].email === email && AtendimentoClient[AtendimentoClientKey].senha === senha) {
+            console.lsog('Login bem-sucedido como usuário de Contas a Pagar!');
+            alert('Login bem-sucedido como usuário de Contas a Pagar!');
+            window.location.href = 'Cadastro de Clientes.html';
+            return;
+        }
+    }
+
+    for (var DespesasKey in Despesas) {
+        if (Despesas.hasOwnProperty(DespesasKey) && Despesas[DespesasKey].email === email && Despesas[DespesasKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Contas a Pagar!');
+            alert('Login bem-sucedido como usuário de Contas a Pagar!');
+            window.location.href = 'TelaDoDespesas.html';
+            return;
+        }
+    }
+
+    for (var ProjetoAtividadeKey in ProjetoAtividade) {
+        if (ProjetoAtividade.hasOwnProperty(ProjetoAtividadeKey) && ProjetoAtividade[ProjetoAtividadeKey].email === email && ProjetoAtividade[ProjetoAtividadeKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Contas a Pagar!');
+            alert('Login bem-sucedido como usuário de Contas a Pagar!');
+            window.location.href = 'TelaDoProjetoAtividade.html';
+            return;
+        }
+    }
+
+    for (var LogisticaEntregaKey in LogisticaEntrega) {
+        if (LogisticaEntrega.hasOwnProperty(LogisticaEntregaKey) && LogisticaEntrega[LogisticaEntregaKey].email === email && LogisticaEntrega[LogisticaEntregaKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Contas a Pagar!');
+            alert('Login bem-sucedido como usuário de Contas a Pagar!');
+            window.location.href = 'TelaDoLogisticaEntrega.html';
+            return;
+        }
+    }
+
+    for (var ServicosGeraisKey in ServicosGerais) {
+        if (ServicosGerais.hasOwnProperty(ServicosGeraisKey) && ServicosGerais[ServicosGeraisKey].email === email && ServicosGerais[ServicosGeraisKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Contas a Pagar!');
+            alert('Login bem-sucedido como usuário de Contas a Pagar!');
+            window.location.href = 'TelaDoServicosGerais.html';
+            return;
+        }
+    }
+
+    for (var MarketingKey in Marketing) {
+        if (Marketing.hasOwnProperty(MarketingKey) && Marketing[MarketingKey].email === email && Marketing[MarketingKey].senha === senha) {
+            console.log('Login bem-sucedido como usuário de Contas a Pagar!');
+            alert('Login bem-sucedido como usuário de Contas a Pagar!');
+            window.location.href = 'TelaDoMarketing.html';
+            return;
+        }
+    }
+
+
+
+            
+    console.log('Credenciais inválidas. Tente novamente.');
+    alert('Credenciais inválidas. Tente novamente.');
+}
+
+    </script>
+
+    <script>
+        var VendasCompras = {
+    'VendasCompras1': { email: 'VendasCompras1@fsaojorge.com.br', senha: '123'},
+    'VendasCompras2': { email: 'VendasCompras2@fsaojorge.com.br', senha: '123',},
+    'VendasCompras3': { email: 'VendasCompras3@fsaojorge.com.br', senha: '123',}
+};
+
+var RecursosHumanos = {
+    'RecursosHumanos1': { email: 'RecursosHumanos1@fsaojorge.com.br', senha: '123'},
+    'RecursosHumanos2': { email: 'RecursosHumanos2@fsaojorge.com.br', senha: '123',},
+    'RecursosHumanos3': { email: 'RecursosHumanos3@fsaojorge.com.br', senha: '123',}
+};
+
+var AtendimentoClient = {
+    'AtendimentoClient1': { email: 'AtendimentoClient1@fsaojorge.com.br', senha: '123'},
+    'AtendimentoClient2': { email: 'AtendimentoClient2@fsaojorge.com.br', senha: '123',},
+    'AtendimentoClient3': { email: 'AtendimentoClient3@fsaojorge.com.br', senha: '123',}
+};
+
+var Despesas = {
+    'Despesas1': { email: 'Despesas1@fsaojorge.com.br', senha: '123'},
+    'Despesas2': { email: 'Despesas2@fsaojorge.com.br', senha: '123',},
+    'Despesas3': { email: 'Despesas3@fsaojorge.com.br', senha: '123',}
+};
+
+var ProjetoAtividade = {
+    'ProjetoAtividade1': { email: 'ProjetoAtividade1@fsaojorge.com.br', senha: '123'},
+    'ProjetoAtividade2': { email: 'ProjetoAtividade2@fsaojorge.com.br', senha: '123',},
+    'ProjetoAtividade3': { email: 'ProjetoAtividade3@fsaojorge.com.br', senha: '123',}
+};
+
+var LogisticaEntrega = {
+    'LogisticaEntrega1': { email: 'LogisticaEntrega1@fsaojorge.com.br', senha: '123'},
+    'LogisticaEntrega2': { email: 'LogisticaEntrega2@fsaojorge.com.br', senha: '123',},
+    'LogisticaEntrega3': { email: 'LogisticaEntrega3@fsaojorge.com.br', senha: '123',}
+};
+
+var ServicosGerais = {
+    'ServicosGerais1': { email: 'ServicosGerais1@fsaojorge.com.br', senha: '123'},
+    'ServicosGerais2': { email: 'ServicosGerais2@fsaojorge.com.br', senha: '123',},
+    'ServicosGerais3': { email: 'ServicosGerais3@fsaojorge.com.br', senha: '123',}
+};
+
+var Marketing = {
+    'Marketing1': { email: 'Marketing1@fsaojorge.com.br', senha: '123'},
+    'Marketing2': { email: 'Marketing2@fsaojorge.com.br', senha: '123',},
+    'Marketing3': { email: 'Marketing3@fsaojorge.com.br', senha: '123',}
+};
+    </script>
+</body>
+
+</html>

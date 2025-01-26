@@ -1,0 +1,81 @@
+styly:
+ .modal2 {
+            display: none;
+            position: left;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 800px;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content2 {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .BotaoFechar {
+            color: #000000;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .BotaoFechar:hover,
+        .BotaoFechar:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #VisualizarPDF {
+            width: 600px;
+            height: 500px;
+            border: none;
+        }
+
+
+
+<li><a href="#" onclick="carregarAtividade('8- DOM Exercicios.pdf')">DOM</a></li>
+
+
+<div id="pdfModal" class="modal2" onclick="fecharModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="BotaoFechar" onclick="fecharModal()">&times;</span>
+            <iframe id="VisualizarPDF"></iframe>
+        </div>
+    </div>
+
+
+script: 
+  async function carregarAtividade(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Não foi possível carregar a atividade.');
+                }
+                const blob = await response.blob();
+                const objectURL = URL.createObjectURL(blob);
+
+                abrirModal(objectURL);
+
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+        function abrirModal(url) {
+            const modal = document.getElementById('pdfModal');
+            const VisualizarPDF = document.getElementById('VisualizarPDF');
+
+            VisualizarPDF.src = url;
+            modal.style.display = 'block';
+        }
+        function fecharModal() {
+            const modal = document.getElementById('pdfModal');
+            modal.style.display = 'none';
+        }
