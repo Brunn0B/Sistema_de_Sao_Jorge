@@ -133,105 +133,62 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <!-- Socket.IO -->
   <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const ngrokUrl = "http://localhost:3000"; // Substitua pelo endereço do ngrok
 
-    // Geração do QR Code
-    QRCode.toCanvas(document.getElementById("qrcode"), ngrokUrl, function (error) {
-      if (error) console.error(error);
-      console.log("QR Code gerado com sucesso!");
+
+
+ <script>
+  const video = document.getElementById("video");
+  const canvas = document.getElementById("canvas");
+  const outputArea = document.getElementById("output");
+  const captureButton = document.getElementById("capture-btn");
+  const socket = io(); // Conecta ao servidor via Socket.IO
+
+  // Configuração da câmera
+  navigator.mediaDevices
+    .getUserMedia({ video: { facingMode: "environment" } })
+    .then((stream) => {
+      video.srcObject = stream;
+      video.play();
+      console.log("Câmera conectada com sucesso!");
+    })
+    .catch((err) => {
+      console.error("Erro ao acessar câmera:", err);
+      alert("Não foi possível acessar a câmera. Verifique as permissões.");
     });
 
-    const linkElement = document.getElementById("link");
-    linkElement.href = ngrokUrl;
-    linkElement.innerText = "Clique aqui para acessar no celular";
-
-    // Configuração de câmera
-    const video = document.getElementById("video");
-    const canvas = document.getElementById("canvas");
-    const outputArea = document.getElementById("output");
-    const socket = io(); // Conecta ao servidor via Socket.IO
-
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-  .then((stream) => console.log("Câmera conectada"))
-  .catch((err) => console.error("Erro ao acessar câmera:", err));
-
-    navigator.mediaDevices
-      .getUserMedia({ video: { facingMode: "environment" } })
-      .then((stream) => {
-        video.srcObject = stream;
-        video.play();
-
-        setInterval(() => {
+  // Capturar imagem e enviar para o OCR
+  captureButton.addEventListener("click", async () => {
+  const context = canvas.getContext("2d");
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
+
   context.drawImage(video, 0, 0, canvas.width, canvas.height);
-  const frame = canvas.toDataURL("image/webp");
-  socket.emit("stream", frame); // Envia o quadro para o servidor
-}, 100);
+  const imageData = canvas.toDataURL("image/png");
 
-socket.on("stream", (data) => {
-  console.log("Recebido quadro:", data.slice(0, 30)); // Exibe parte do frame no console
-});
-
-const videoElement = document.getElementById("video");
-socket.on("stream", (data) => {
-  const image = new Image();
-  image.src = data;
-  image.onload = () => {
-    const context = videoElement.getContext("2d");
-    context.drawImage(image, 0, 0, videoElement.width, videoElement.height);
-  };
-});
-
-        // Enviar quadros para o servidor
-        const context = canvas.getContext("2d");
-        setInterval(() => {
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          context.drawImage(video, 0, 0, canvas.width, canvas.height);
-          const frame = canvas.toDataURL("image/webp");
-          socket.emit("stream", frame); // Envia o quadro para o servidor
-        }, 100); // Envia 10 quadros por segundo
-      })
-      .catch((err) => {
-        console.error("Erro ao acessar câmera:", err);
-      });
-
-    // Processamento OCR
-    async function processFrame() {
-      const context = canvas.getContext("2d");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-
-      // Captura do frame
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const imageData = canvas.toDataURL("image/png");
-
-      // Envia para OCR no servidor
-      try {
-        const response = await fetch(`${ngrokUrl}/upload`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ image: imageData }),
-        });
-
-        const data = await response.json();
-        if (data.success) {
-          outputArea.value = data.text;
-        } else {
-          console.error("OCR falhou:", data.message);
-        }
-      } catch (err) {
-        console.error("Erro ao processar quadro:", err);
-      }
-
-      requestAnimationFrame(processFrame);
-    }
-
-    video.addEventListener("play", () => {
-      processFrame();
+  try {
+    console.log("Enviando imagem para o servidor...");
+    const response = await fetch("/upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image: imageData }),
     });
-  </script>
+
+    const data = await response.json();
+    if (data.success) {
+      outputArea.value = data.text;
+      console.log("Texto digitalizado:", data.text);
+    } else {
+      console.error("Erro no OCR:", data.message);
+      alert("Erro no OCR: " + data.message);
+    }
+  } catch (err) {
+    console.error("Erro ao enviar imagem ou processar resposta:", err);
+    alert("Falha na digitalização da imagem. Tente novamente.");
+  }
+});
+
+</script>
+
+  
 </body>
 </html>
