@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Folha de pagamento</title>
+
+    <style>
+        body {
+                  background-color: #1a1a1a;
+                  color: #ddd;
+                  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                  margin: 0;
+                  padding: 0;
+                  display: flex;
+                  height: 100vh;
+              }
+      
+              nav {
+                  background-color: #282c31;
+                  padding: 10px;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  width: 80px;
+                  position: fixed;
+                  height: 100%;
+                  text-align: center;
+                  z-index: 1000;
+              }
+      
+              nav img {
+                  max-width: 60%;
+                  margin-bottom: 20px;
+              }
+      
+              nav ul {
+                  list-style-type: none;
+                  padding: 0;
+                  margin: 0;
+                  width: 100%;
+                  text-align: center;
+              }
+      
+              nav a {
+                  text-decoration: none;
+                  color: #ddd;
+                  font-weight: bold;
+                  font-size: 14px;
+                  padding: 15px;
+                  border-radius: 5px;
+                  transition: background-color 0.3s;
+                  display: block;
+                  margin-bottom: 10px;
+              }
+      
+              nav a:hover {
+                  background-color: #b8860b;
+              }
+      
+              main {
+                  padding: 20px;
+                  flex-grow: 1;
+                  display: flex;
+                  flex-direction: column;
+                  margin-left: 80px;
+              }
+      
+              section {
+                  padding: 20px;
+                  background-color: #333;
+                  margin: 10px;
+                  border-radius: 10px;
+                  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                  flex-grow: 1;
+                  display: none;
+                  overflow: auto;
+              }
+      
+              section.active {
+                  display: flex;
+              }
+      
+              table {
+                  width: 100%;
+                  border-collapse: collapse;
+                  margin-top: 20px;
+              }
+      
+              th,
+              td {
+                  border: 1px solid #555;
+                  padding: 15px;
+                  text-align: left;
+                  color: #ddd;
+                  white-space: nowrap;
+                  letter-spacing: 1px;
+              }
+      
+              button {
+                  padding: 10px;
+                  border-radius: 5px;
+                  background-color: #8b4513;
+                  color: #fff;
+                  border: none;
+                  cursor: pointer;
+                  transition: background-color 0.3s;
+                  width: 120px;
+                  margin-bottom: 10px;
+              }
+      
+              button:hover {
+                  background-color: #cd853f;
+              }
+      
+              #updateButton {
+                  width: 120px;
+                  height: 50px;
+                  margin-bottom: 10px;
+                  position: sticky;
+                  top: 0;
+                  z-index: 2;
+                  margin-top: 20px;
+              }
+      
+              #cadastro form {
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: flex-start;
+                  margin-top: 10px;
+              }
+      
+              #cadastro form label,
+              #cadastro form input,
+              #cadastro form select {
+                  margin-left: 50px;
+                  width: calc(48% - 10px);
+                  margin-bottom: 15px;
+              }
+      
+              #cadastro form button {
+                  margin-top: 10px;
+                  margin-left: 50px;
+              }
+      
+              #relatorios {
+                  display: none;
+              }
+      
+              #relatorios.active {
+                  display: flex;
+                  flex-direction: column;
+              }
+      
+              #relatorios button,
+              #relatorios button + button {
+                  width: 120px;
+                  height: 50px;
+                  margin-top: 10px;
+              }
+      
+              #relatorios #reportContent {
+                  margin-top: 10px;
+              }
+      
+              .logo img {
+                  max-width: 100px;
+                  height: auto;
+              }
+              </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="IMG/Logo 2 hd.png" alt="Logo">
+        </div>
+        <ul>
+            <li><a href="#" onclick="showSection('cadastro')">Cadastro</a></li>
+            <li><a href="#" onclick="showSection('listagem')">Listagem</a></li>
+            <li><a href="#" onclick="showSection('relatorios')">Relatórios</a></li>
+            <li><a href="-TelaDoAdministrador.html" style="color: red;">Sair</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="cadastro" class="active">
+            <form id="accountForm" method="post" enctype="multipart/form-data">
+                <label for="IDCliente">ID do Cliente:</label>
+                <input type="text" id="IDCliente" name="IDCliente" required>
+
+                <label for="NomeCliente">Nome do Cliente:</label>
+                <input type="text" id="NomeCliente" name="NomeCliente" required>
+
+                <label for="Valor">Valor:</label>
+                <input type="number" id="Valor" name="Valor" required>
+
+                <label for="DataVencimento">Data de Vencimento:</label>
+                <input type="date" id="DataVencimento" name="DataVencimento" required>
+
+                <label for="StatusFilter">Filtrar por Status:</label>
+                <select id="StatusFilter" name="StatusFilter">
+                    <option value="Pendente">Pendente</option>
+                    <option value="Pago">Pago</option>
+                    <option value="Atrasado">Atrasado</option>
+                </select>
+
+                <button type="button" onclick="submitForm()">Enviar</button>
+
+            </form>
+        </section>
+
+        <section id="listagem">
+            <button id="updateButton" onclick="refreshAccountList()">Atualizar Lista</button>
+
+            <table id="accountTable">
+                <thead>
+                    <tr>
+                        <th>Nome do Cliente</th>
+                        <th>Valor</th>
+                        <th>Data de Vencimento</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </section>
+
+        <section id="relatorios" class="report-section">
+            <div id="buttonsContainer">
+                <button onclick="generateReports()">Relatório</button>
+                <button onclick="saveAsPDF()">PDF</button>
+            </div>
+            <div id="reportContent"></div>
+        </section>
+    </main>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+    </script>
+</body>
+</html>

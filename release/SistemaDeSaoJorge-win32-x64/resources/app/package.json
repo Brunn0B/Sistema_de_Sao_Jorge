@@ -1,0 +1,26 @@
+{
+  "name": "sistema_de_sao_jorge",
+  "version": "2.0.1",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-packager . SistemaDeSaoJorge --platform=win32 --arch=x64 --icon=icon.ico --out=release --overwrite",
+     "dist": "electron-builder"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "express": "^4.21.2",
+    "jspdf": "^2.5.1",
+    "tesseract.js": "^6.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "electron": "^34.0.1",
+    "electron-builder": "^25.1.8",
+    "electron-packager": "^17.1.2"
+  },
+  "description": ""
+}

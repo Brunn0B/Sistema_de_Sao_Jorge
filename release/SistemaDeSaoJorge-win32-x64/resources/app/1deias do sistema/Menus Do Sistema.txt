@@ -1,0 +1,63 @@
+Sistemas para ADMS (Administradores):
+
+Financeiro e Contabilidade:
+Contas a Receber e Contas a Pagar.
+Fluxo de Caixa e Orçamentos.
+Relatórios Financeiros e Análise de Custos.
+
+Recursos Humanos:
+Módulos de Recursos Humanos
+Gerenciamento de folha de pagamento.
+Controle de horas trabalhadas.
+Administração de benefícios e férias.
+
+Administração Geral:
+Controle de usuários e permissões.
+Gerenciamento de projetos e atividades.
+Relatórios de desempenho global.
+
+Tecnologia da Informação (TI):
+Controle de ativos de TI.
+Registro e resolução de tickets de suporte.
+Segurança e acesso a sistemas.
+
+Marketing e Vendas:
+Acompanhamento de campanhas de marketing.
+Registro de vendas e relatórios de desempenho.
+Gestão de leads e clientes.
+
+
+Sistemas para Usuários Comuns:
+
+Vendas e Compras:
+Registro de vendas realizadas.
+Acompanhamento de pedidos e compras.
+Controle de estoque.
+
+Recursos Humanos (para usuários comuns):
+Solicitações de folga.
+Atualização de dados pessoais.
+
+Atendimento ao Cliente:
+Registro de solicitações de clientes.
+Acompanhamento de tickets de suporte.
+
+Despesas:
+Lançamento de despesas.
+Controle de reembolsos.
+
+Projetos/Atividades:
+Acompanhamento de projetos em andamento.
+Registro de horas trabalhadas em projetos.
+
+Logística e Entrega:
+Rastreamento de entregas.
+Controle de transporte.
+
+Serviços Gerais:
+Registro de serviços prestados.
+Controle de manutenção.
+
+Marketing (para usuários comuns):
+Registro de despesas de marketing.
+Acompanhamento de campanhas.

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Funcionários</title>
+
+    <style>
+      body {
+    background-color: #1a1a1a; /* Preto escuro */
+    color: #ddd; /* Texto em branco */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+}
+
+nav {
+    background-color: #282c31;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+    position: fixed;
+    height: 100%;
+    text-align: center;
+    z-index: 1000; /* Defina um valor alto para garantir que esteja à frente de outras camadas */
+}
+
+nav img {
+    max-width: 60%;
+    margin-bottom: 20px;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    text-align: center;
+}
+
+nav a {
+    text-decoration: none;
+    color: #ddd; /* Texto em branco */
+    font-weight: bold;
+    font-size: 14px;
+    padding: 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    display: block;
+    margin-bottom: 10px;
+}
+
+nav a:hover {
+    background-color: #b8860b; /* Dourado metálico */
+}
+
+main {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: 80px;
+}
+
+section {
+    padding: 20px;
+    background-color: #333; /* Cinza escuro */
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
+    display: none;
+    overflow: auto;
+}
+
+section.active {
+    display: flex;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th,
+td {
+    border: 1px solid #555; /* Cinza mais claro para bordas */
+    padding: 15px;
+    text-align: left;
+    color: #ddd; /* Texto em branco */
+    white-space: nowrap;
+    letter-spacing: 1px;
+}
+
+button {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #8b4513; /* Marrom escuro (simulando dourado metálico) */
+    color: #fff; /* Texto em branco */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 120px;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    background-color: #cd853f; /* Marrom mais claro (simulando dourado metálico) */
+}
+
+#updateButton {
+    width: 120px;
+    height: 50px;
+    margin-bottom: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    margin-top: 20px;
+}
+
+#cadastro form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+#cadastro form label,
+#cadastro form input,
+#cadastro form select {
+    margin-left: 50px;
+    width: calc(48% - 10px);
+    margin-bottom: 15px;
+}
+
+#cadastro form button {
+    margin-top: 10px;
+    margin-left: 50px;
+}
+
+#relatorios {
+    display: none; /* Inicialmente, oculte a seção de relatórios */
+}
+
+#relatorios.active {
+    display: flex;
+    flex-direction: column;
+}
+
+#relatorios button,
+#relatorios button + button {
+    width: 120px;
+    height: 50px;
+    margin-top: 10px;
+}
+
+#relatorios #reportContent {
+    margin-top: 10px;
+}
+
+.logo img {
+    max-width: 100px;
+    height: auto;
+}
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="logo">
+            <img src="///public/IMG/Logo Do loguin.png" alt="Logo">
+        </div>
+        <ul>
+            <li><a href="#" onclick="showSection('cadastro')">Cadastro</a></li>
+            <li><a href="#" onclick="showSection('listagem')">Listagem</a></li>
+            <li><a href="#" onclick="showSection('relatorios')">Relatórios</a></li>
+            <li><a href="public/-TelaDoAdministrador.html" style="color: red;">Sair</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="cadastro" class="active">
+            <form id="employeeForm" method="post" enctype="multipart/form-data">
+                <label for="PrimeiroNome">Nome:</label>
+                <input type="text" id="PrimeiroNome" name="PrimeiroNome" required>
+
+                <label for="Sobrenome">Sobrenome:</label>
+                <input type="text" id="Sobrenome" name="Sobrenome" required>
+
+                <label for="Email">E-mail:</label>
+                <input type="email" id="Email" name="Email" required>
+
+                <label for="CPF">CPF:</label>
+                <input type="text" id="CPF" name="CPF" required>
+
+                <label for="RG">RG:</label>
+                <input type="text" id="RG" name="RG" required>
+
+                <label for="Cargo">Cargo:</label>
+                <input type="text" id="Cargo" name="Cargo" required>
+
+                <label for="Funcao">Função:</label>
+                <input type="text" id="Funcao" name="Funcao" required>
+
+                <label for="Hierarquia">Grau Hierárquico:</label>
+                <input type="text" id="Hierarquia" name="Hierarquia" required>
+
+                <label for="Salario">Salário:</label>
+                <input type="number" id="Salario" name="Salario" required>
+
+                <label for="MetodoPagamento">Método de Pagamento:</label>
+                <select id="MetodoPagamento" name="MetodoPagamento" required>
+                    <option value="TransferenciaBancaria">Transferência Bancária</option>
+                    <option value="Cheque">Cheque</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                </select>
+
+                <label for="Foto">Foto:</label>
+                <input type="file" name="Foto" id="Foto">
+
+                <button type="button" onclick="submitForm()">Enviar</button>
+            </form>
+        </section>
+
+        <section id="listagem">
+            <button id="updateButton" onclick="refreshEmployeeList()">Atualizar Lista</button>
+            
+            <table id="employeeTable">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Sobrenome</th>
+                        <th>E-mail</th>
+                        <th>CPF</th>
+                        <th>RG</th>
+                        <th>Cargo</th>
+                        <th>Função</th>
+                        <th>Grau Hierárquico</th>
+                        <th>Salário</th>
+                        <th>Método de Pagamento</th>
+                        <th>Foto</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </section>
+
+        <section id="relatorios" class="report-section">
+            <div id="buttonsContainer">
+                <button onclick="generateReports()">Relatório</button>
+                <button onclick="saveAsPDF()">PDF</button>
+            </div>
+            <div id="reportContent"></div>
+        </section>
+    </main>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+    </script>
+
+<script>
+    function submitForm() {
+        var xhr = new XMLHttpRequest();
+
+        console.log("Função submitForm chamada");
+
+        var formData = new FormData(document.getElementById('employeeForm'));
+        formData.append('action', 'insertEmployee');
+
+        xhr.open('POST', 'backend.php', true);
+
+        xhr.onload = function () {
+            handleResponse(xhr);
+        };
+
+        xhr.onerror = function () {
+            console.error("Erro na solicitação. Verifique a conexão ou o servidor.");
+        };
+
+        xhr.send(formData);
+    }
+
+    function refreshEmployeeList() {
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('POST', 'backend.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send('action=getAllEmployees');
+
+        xhr.onload = function () {
+            handleResponse(xhr, true);
+        };
+
+        xhr.onerror = function () {
+            console.error("Erro na solicitação. Verifique a conexão ou o servidor.");
+        };
+        
+    }
+    function autoRefreshEmployeeList() {
+    refreshEmployeeList();
+}
+
+
+
+    function handleResponse(xhr, isRefresh) {
+    console.log("Status:", xhr.status);
+    console.log("Response:", xhr.responseText);
+
+    if (xhr.status === 200) {
+        try {
+            var response = JSON.parse(xhr.responseText);
+            console.log("Parsed Response:", response);
+
+            if (isRefresh) {
+                handleRefresh(response);
+            } else {
+                handleFormSubmission(response);
+            }
+        } catch (error) {
+            console.error("Erro ao analisar JSON:", error);
+            handleNonJSONResponse(xhr.responseText);
+        }
+    } else {
+        console.error("Erro na solicitação. Status:", xhr.status);
+        alert("Erro: " + (isRefresh ? "obter lista de funcionários" : "cadastrar funcionário") +
+            ". Código de status: " + xhr.status);
+    }
+}
+
+function handleNonJSONResponse(responseText) {
+    
+    if (responseText.includes('<!DOCTYPE html>')) {
+        alert("Erro no servidor. Consulte o console do navegador para obter mais detalhes.");
+    } else {
+        alert("Erro desconhecido. Consulte o console do navegador para obter mais detalhes.");
+    }
+}
+
+    function handleRefresh(response) {
+        if (response.success) {
+            clearEmployeeTable();
+            response.employee.forEach(function (employee) {
+                addEmployeeToTable(employee);
+            });
+        } else {
+            alert("Erro ao obter a lista de funcionários: " + response.error);
+        }
+    }
+
+    function handleFormSubmission(response) {
+        if (response.success) {
+            addEmployeeToTable(response.employee);
+        } else {
+            alert("Erro ao cadastrar funcionário: " + (response.error || "Erro indefinido"));
+        }
+    }
+
+    function addEmployeeToTable(employee) {
+    var tabela = document.getElementById('employeeTable').getElementsByTagName('tbody')[0];
+    var novaLinha = tabela.insertRow(tabela.rows.length);
+
+    var colunasExibidas = ['primeiro_nome', 'sobrenome', 'email', 'cpf', 'rg', 'cargo', 'funcao', 'hierarquia', 'salario', 'metodo_pagamento', 'foto'];
+
+    if (employee) {
+        colunasExibidas.forEach(function (key, index) {
+            var celula = novaLinha.insertCell();
+            if (key === 'foto') {
+            
+                if (employee[key] !== 'N/A') {
+                    var caminhoFoto = '/public/IMG/FotosFuncionariosRH.IMG/' + encodeURIComponent(employee[key]);
+                    celula.innerHTML = '<img src="' + caminhoFoto + '" alt="Foto" style="max-width: 90px; max-height: 90px;">';
+                } else {
+                    celula.innerHTML = 'N/A';
+                }
+            } else {
+                celula.innerHTML = employee[key];
+
+                
+                var larguras = [100, 25, 350, 250, 220, 305, 300, 200, 200, 200];
+                celula.style.maxWidth = larguras[index] + 'px';
+                celula.style.wordWrap = 'break-word';
+            }
+        });
+
+        var celulaAcoes = novaLinha.insertCell();
+        celulaAcoes.innerHTML = '<button onclick="removeEmployee(this)">Remover</button>';
+    } else {
+        alert("Erro ao cadastrar funcionário: Dados de funcionário ausentes");
+    }
+}
+
+    function clearEmployeeTable() {
+        var tabela = document.getElementById('employeeTable').getElementsByTagName('tbody')[0];
+        tabela.innerHTML = '';
+    }
+
+    function removeEmployee(button) {
+    var confirmation = confirm("Tem certeza de que deseja excluir este funcionário?");
+    if (!confirmation) {
+        return;
+    }
+
+    var row = button.closest('tr');
+    var table = row.closest('table');
+
+    if (!row || !table) {
+        console.error("Erro ao encontrar a linha ou tabela.");
+        return;
+    }
+
+    var rowIndex = row.rowIndex;
+
+    
+    if (table.rows[rowIndex]) {
+    
+        var employeeId = table.rows[rowIndex].cells[0].innerHTML;
+
+        
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'backend.php', true);
+
+        var formData = new FormData();
+        formData.append('action', 'deleteEmployee');
+        formData.append('id', employeeId);
+
+        xhr.onload = function () {
+            handleDeleteResponse(xhr, rowIndex);
+        };
+
+        xhr.onerror = function () {
+            console.error("Erro na solicitação. Verifique a conexão ou o servidor.");
+        };
+
+        xhr.send(formData);
+    }
+}
+
+    function handleDeleteResponse(xhr, rowIndex) {
+    console.log("Status:", xhr.status);
+
+    if (xhr.status === 200) {
+        try {
+            var response = JSON.parse(xhr.responseText);
+            if (response.success) {
+                
+                var table = document.getElementById('employeeTable').getElementsByTagName('tbody')[0];
+                var rowToRemove = table.querySelector('tr:nth-child(' + rowIndex + ')');
+
+                if (rowToRemove) {
+                    table.removeChild(rowToRemove);
+                } else {
+                    console.error("Índice de linha inválido:", rowIndex);
+                }
+            } else {
+                alert("Erro ao excluir o funcionário: " + (response.error || "Erro indefinido"));
+            }
+        } catch (error) {
+            console.error("Erro ao analisar JSON:", error);
+        }
+    } else {
+        console.error("Erro na solicitação. Status:", xhr.status);
+        alert("Erro ao excluir o funcionário. Código de status: " + xhr.status);
+    }
+}
+    // SCRIPT DO PDF - NÃO MEXER
+    function generateReports() {
+        var table = document.getElementById('employeeTable');
+        var numRows = table.rows.length - 1;
+
+        if (numRows === 0) {
+            
+        } else {
+            var totalSalary = 0;
+            var maxSalary = 0;
+            var minSalary = Number.MAX_SAFE_INTEGER;
+
+            
+            for (var i = 1; i <= numRows; i++) {
+                var salary = parseFloat(table.rows[i].cells[8].innerHTML.replace(',', '.'));
+
+                if (!isNaN(salary)) {
+                    totalSalary += salary;
+                    if (salary > maxSalary) {
+                        maxSalary = salary;
+                    }
+                    if (salary < minSalary) {
+                        minSalary = salary;
+                    }
+                }
+            }
+        }
+
+        var averageSalary = totalSalary / numRows;
+
+        var reportContent = document.getElementById('reportContent');
+        reportContent.innerHTML = '<h3>Relatório Executivo de RH</h3>' +
+            '<p>Número total de funcionários: ' + numRows + '</p>' +
+            '<p>Média salarial: R$ ' + (isNaN(averageSalary) ? '0,00' : averageSalary.toFixed(2).replace('.', ',')) + '</p>' +
+            '<p>Salário máximo: R$ ' + (isNaN(maxSalary) ? '0,00' : maxSalary.toFixed(2).replace('.', ',')) + '</p>' +
+            '<p>Salário mínimo: R$ ' + (isNaN(minSalary) ? '0,00' : minSalary.toFixed(2).replace('.', ',')) + '</p>';
+    }
+
+    function saveAsPDF() {
+    var table = document.getElementById('employeeTable');
+    var numRows = table.rows.length - 1;
+
+    
+    var pdf = new window.jspdf.jsPDF({ orientation: 'landscape' });
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(18);
+    pdf.text('Relatório Executivo de RH', 20, 15);
+        
+            if (numRows === 0) {
+                pdf.text('Relatório Geral', 20, 30);
+                pdf.text('Número total de funcionários: 0', 20, 45);
+                pdf.text('Média salarial: R$ 0,00', 20, 60);
+                pdf.text('Salário máximo: R$ 0,00', 20, 75);
+                pdf.text('Salário mínimo: R$ 0,00', 20, 90);
+            } else {
+                var rowDataArray = [];
+        
+                for (var i = 1; i <= numRows; i++) {
+                    var rowData = [];
+                    for (var j = 0; j < table.rows[i].cells.length - 1; j++) {
+                        rowData.push(table.rows[i].cells[j].innerHTML);
+                    }
+                    rowDataArray.push(rowData);
+                }
+        
+                
+                var totalSalary = 0;
+                var maxSalary = 0;
+                var minSalary = Number.MAX_SAFE_INTEGER;
+        
+                for (var i = 1; i <= numRows; i++) {
+                    var salary = parseFloat(rowDataArray[i - 1][8].replace(',', '.'));
+                    totalSalary += salary;
+        
+                    if (!isNaN(salary)) {
+                        if (salary > maxSalary) {
+                            maxSalary = salary;
+                        }
+                        if (salary < minSalary) {
+                            minSalary = salary;
+                        }
+                    }
+                }
+        
+                var averageSalary = totalSalary / numRows;
+        
+                pdf.text('Relatório Geral', 20, 30);
+                pdf.text('Número total de funcionários: ' + numRows, 20, 45);
+                pdf.text('Média salarial: R$ ' + (isNaN(averageSalary) ? '0,00' : averageSalary.toFixed(2).replace('.', ',')), 20, 60);
+                pdf.text('Salário máximo: R$ ' + (isNaN(maxSalary) ? '0,00' : maxSalary.toFixed(2).replace('.', ',')), 20, 75);
+                pdf.text('Salário mínimo: R$ ' + (isNaN(minSalary) ? '0,00' : minSalary.toFixed(2).replace('.', ',')), 20, 90);
+        
+                
+                pdf.autoTable({
+    head: [['Nome', 'Sobrenome', 'E-mail', 'CPF', 'RG', 'Cargo', 'Função', 'Grau Hierárquico', 'Salário', 'Método de Pagamento']],
+    body: rowDataArray,
+    theme: 'grid',
+    margin: { top: 110 },
+    columnStyles: {
+        0: { columnWidth: 20 }, // Nome
+        1: { columnWidth: 25 }, //SobreNome
+        2: { columnWidth: 47 }, //email
+        3: { columnWidth: 32 }, //Cpf
+        4: { columnWidth: 32 }, //Rg
+        5: { columnWidth: 25 }, //Cargo
+        6: { columnWidth: 25 }, //Função
+        7: { columnWidth: 22 }, //Grau Hierarquico
+        8: { columnWidth: 20 }, //Salario
+        9: { columnWidth: 26 }, //Meio-pagamento
+    },
+});
+
+        
+                pdf.setFontSize(12);
+        
+                for (var i = 0; i < numRows; i++) {
+                    if (rowDataArray[i][10] !== 'N/A') {
+                        var photoName = rowDataArray[i][10];
+                        var imagePath = '/IMG/FotosFuncionariosRH.IMG/' + encodeURIComponent(photoName);
+        
+                        pdf.addImage(imagePath, 'JPEG', 20, 120 + i * 60, 50, 50);
+                    }
+                }
+            }
+        
+            pdf.save('Relatorio_RH.pdf');
+        }
+</script>
+
+
+</body>
+
+</html>
