@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { extractTextFromImage } = require("./utils/ocr");
+const { extractTextFromImage } = require("./public/utils/ocr");
 
 async function testOCR() {
   try {

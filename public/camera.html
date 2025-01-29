@@ -11,69 +11,88 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
+      background: #2c2c2c;
+      color: #f0f0f0;
     }
+
     header {
-      padding: 10px;
-      background: #3f51b5;
-      color: white;
+      padding: 15px;
+      background: #1e1e1e;
       text-align: center;
+      border-bottom: 1px solid #444;
+      position: relative;
     }
+
+    /* Logo maior e flutuando */
+    header img {
+      height: 80px; /* Aumente o tamanho da imagem */
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10; /* Garante que fique acima dos outros elementos */
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      padding-top: 100px; /* Adiciona espaço para o logo maior */
+    }
+
+    /* Seta para voltar */
+    .back-arrow {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      font-size: 24px;
+      color: #f0f0f0;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .back-arrow:hover {
+      color: #3f51b5;
+    }
+
     main {
       flex: 1;
       display: flex;
+      flex-direction: column;
       gap: 20px;
       padding: 20px;
     }
+
     .camera-section, .output-section {
       flex: 1;
-      border: 1px solid #ccc;
+      border: 1px solid #444;
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      background: #1e1e1e;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .camera-section {
       display: flex;
       flex-direction: column;
-      background: #f9f9f9;
-    }
-    .camera-section {
       align-items: center;
       justify-content: center;
     }
+
     video {
       width: 100%;
-      height: auto;
+      max-height: 50%;
+      object-fit: cover;
     }
+
     .controls {
       padding: 10px;
       display: flex;
       justify-content: space-around;
-    }
-    .output-section {
-      padding: 10px;
-    }
-    .data-options {
-      display: flex;
-      flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 10px;
+      background: #1e1e1e;
     }
-    .data-options label {
-      flex: 1;
-      min-width: 150px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-    }
-    .data-options input {
-      margin-right: 10px;
-    }
-    textarea {
-      flex: 1;
-      width: 100%;
-      resize: none;
-      padding: 10px;
-      font-size: 14px;
-    }
-    button {
+
+    .controls button {
       padding: 10px 15px;
       background: #3f51b5;
       color: white;
@@ -82,34 +101,108 @@
       cursor: pointer;
       transition: background 0.3s;
     }
-    button:hover {
+
+    .controls button:hover {
       background: #303f9f;
     }
-    button:disabled {
-      background: #ccc;
+
+    .controls button:disabled {
+      background: #555;
       cursor: not-allowed;
+    }
+
+    .output-section {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .data-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .data-options label {
+      flex: 1;
+      min-width: 150px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+
+    .data-options input {
+      margin-right: 10px;
+    }
+
+    textarea {
+      flex: 1;
+      width: 100%;
+      resize: none;
+      padding: 10px;
+      font-size: 14px;
+      background: #2c2c2c;
+      color: #f0f0f0;
+      border: 1px solid #444;
+      border-radius: 4px;
+    }
+
+    .qr-code {
+      margin-top: 20px;
+      text-align: center;
+      color: #f0f0f0;
+    }
+
+    @media (max-width: 768px) {
+      main {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+      }
+
+      .camera-section {
+        flex: none;
+        height: 50%;
+        order: -1;
+      }
+
+      video {
+        max-height: 100%;
+      }
+
+      .output-section {
+        flex: 1;
+        padding: 10px;
+      }
+
+      header img {
+        height: 100px; /* Logo menor em telas pequenas */
+      }
+
+      header h1 {
+        font-size: 1.2rem;
+      }
     }
   </style>
 </head>
 <body>
   <header>
+    <a href="#" class="back-arrow" onclick="history.back();">←</a>
+    <img src="IMG/F-Sao-jorge.png" alt="Logo"> <!-- Substitua "logo.png" pelo caminho da sua logo -->
     <h1>OCR e Captura de Imagem</h1>
   </header>
   <main>
     <!-- Seção da câmera -->
     <div class="camera-section">
       <video id="video" autoplay playsinline></video>
+      <canvas id="canvas" style="display: none;"></canvas> <!-- Canvas oculto -->
       <div class="controls">
         <button id="capture-btn">Capturar</button>
-        <button id="upload-btn" disabled>Enviar</button>
-      </div>
-      <canvas id="canvas" style="display: none;"></canvas>
-      <div class="qr-code">
-        <h3>Acesse pelo celular</h3>
-        <div id="qrcode"></div>
-        <a id="link" href="#" target="_blank">Abrir no celular</a>
+        <button id="upload-btn" disabled>Enviar <span id="loader" style="display: none;">⏳</span></button>
       </div>
     </div>
+    
 
     <!-- Seção de dados digitalizados -->
     <div class="output-section">
@@ -122,7 +215,7 @@
         <label><input type="checkbox" id="cpf" /> CPF</label>
         <label><input type="checkbox" id="telefone" /> Telefone</label>
       </div>
-      <textarea id="output" placeholder="Os dados digitalizados aparecerão aqui..." rows="10"></textarea>
+      <textarea id="output" placeholder="Os dados digitalizados aparecerão aqui..." rows="8"></textarea>
       <div class="controls">
         <button id="export-btn" disabled>Exportar para Planilha</button>
       </div>
@@ -134,61 +227,87 @@
   <!-- Socket.IO -->
   <script src="/socket.io/socket.io.js"></script>
 
+  <script>
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const outputArea = document.getElementById("output");
+    const captureButton = document.getElementById("capture-btn");
+    const uploadButton = document.getElementById("upload-btn");
+    const exportButton = document.getElementById("export-btn");
+    const loader = document.getElementById("loader");
+    const socket = io(); // Conecta ao servidor via Socket.IO
 
+    // Configuração da câmera
+    navigator.mediaDevices
+      .getUserMedia({ video: { facingMode: "environment" } })
+      .then((stream) => {
+        video.srcObject = stream;
+        video.play();
+      })
+      .catch((err) => {
+        console.error("Erro ao acessar câmera:", err);
+        alert("Não foi possível acessar a câmera. Verifique as permissões.");
+      });
 
- <script>
-  const video = document.getElementById("video");
-  const canvas = document.getElementById("canvas");
-  const outputArea = document.getElementById("output");
-  const captureButton = document.getElementById("capture-btn");
-  const socket = io(); // Conecta ao servidor via Socket.IO
-
-  // Configuração da câmera
-  navigator.mediaDevices
-    .getUserMedia({ video: { facingMode: "environment" } })
-    .then((stream) => {
-      video.srcObject = stream;
-      video.play();
-      console.log("Câmera conectada com sucesso!");
-    })
-    .catch((err) => {
-      console.error("Erro ao acessar câmera:", err);
-      alert("Não foi possível acessar a câmera. Verifique as permissões.");
-    });
-
-  // Capturar imagem e enviar para o OCR
-  captureButton.addEventListener("click", async () => {
+    // Capturar imagem e enviar para o OCR
+    captureButton.addEventListener("click", async () => {
   const context = canvas.getContext("2d");
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
 
   context.drawImage(video, 0, 0, canvas.width, canvas.height);
-  const imageData = canvas.toDataURL("image/png");
 
-  try {
-    console.log("Enviando imagem para o servidor...");
-    const response = await fetch("/upload", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ image: imageData }),
-    });
+  canvas.toBlob(async (blob) => {
+    try {
+      loader.style.display = "inline";
+      uploadButton.disabled = true;
 
-    const data = await response.json();
-    if (data.success) {
-      outputArea.value = data.text;
-      console.log("Texto digitalizado:", data.text);
-    } else {
-      console.error("Erro no OCR:", data.message);
-      alert("Erro no OCR: " + data.message);
+      const formData = new FormData();
+      formData.append("image", blob, "captured.png");
+
+      console.log("📸 Enviando imagem para o servidor...");
+
+      const response = await fetch("http://localhost:3000/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      console.log("🔄 Resposta recebida do servidor:", response);
+
+      if (!response.ok) {
+        throw new Error(`Erro HTTP: ${response.status}`);
+      }
+
+      const extractedData = await response.json();
+      console.log("✅ Dados extraídos:", extractedData);
+
+      outputArea.value = `
+        Nome: ${extractedData.nome || "Não encontrado"}
+        CEP: ${extractedData.cep || "Não encontrado"}
+        Endereço: ${extractedData.endereco || "Não encontrado"}
+        RG: ${extractedData.rg || "Não encontrado"}
+        CPF: ${extractedData.cpf || "Não encontrado"}
+        Telefone: ${extractedData.telefone || "Não encontrado"}
+      `;
+    } catch (err) {
+      console.error("❌ Erro ao enviar imagem:", err);
+      alert("Falha na digitalização da imagem. Tente novamente.");
+    } finally {
+      loader.style.display = "none";
+      uploadButton.disabled = false;
     }
-  } catch (err) {
-    console.error("Erro ao enviar imagem ou processar resposta:", err);
-    alert("Falha na digitalização da imagem. Tente novamente.");
-  }
+  }, "image/png");
 });
 
-</script>
 
-  
+
+
+
+    // Gerar QR Code para o URL do servidor
+    socket.on("ngrok_url", (url) => {
+      QRCode.toCanvas(document.getElementById("qrcode"), url);
+      document.getElementById("link").href = url;
+    });
+  </script>
 </body>
 </html>
