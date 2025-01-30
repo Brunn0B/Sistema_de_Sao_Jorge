@@ -43,6 +43,8 @@ Medidas de segurança contra injeção SQL e validação de entrada.
 4.8 Atualizações e Manutenção
 Atualizações automáticas para conformidade com mudanças legais.
 Sistema de backup regular para garantir a integridade dos dados.
+4.9 Inplementação de scan automatico de arquivos Fisicos
+sistema para gerir de forma automatica a digitalizaçao e formatação em uma planilha de modo autonomo. 
 
 
 5. Implementação
