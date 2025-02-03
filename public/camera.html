@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OCR e Captura de Imagem</title>
   <style>
+    /* Estilo para PC */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -23,23 +24,21 @@
       position: relative;
     }
 
-    /* Logo maior e flutuando */
     header img {
-      height: 80px; /* Aumente o tamanho da imagem */
+      height: 80px;
       position: absolute;
       top: 10px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 10; /* Garante que fique acima dos outros elementos */
+      z-index: 10;
     }
 
     header h1 {
       margin: 0;
       font-size: 1.5rem;
-      padding-top: 100px; /* Adiciona espaço para o logo maior */
+      padding-top: 100px;
     }
 
-    /* Seta para voltar */
     .back-arrow {
       position: absolute;
       top: 15px;
@@ -148,12 +147,7 @@
       border-radius: 4px;
     }
 
-    .qr-code {
-      margin-top: 20px;
-      text-align: center;
-      color: #f0f0f0;
-    }
-
+    /* Estilo para Mobile */
     @media (max-width: 768px) {
       main {
         flex-direction: column;
@@ -177,7 +171,7 @@
       }
 
       header img {
-        height: 100px; /* Logo menor em telas pequenas */
+        height: 100px;
       }
 
       header h1 {
@@ -189,20 +183,19 @@
 <body>
   <header>
     <a href="#" class="back-arrow" onclick="history.back();">←</a>
-    <img src="IMG/F-Sao-jorge.png" alt="Logo"> <!-- Substitua "logo.png" pelo caminho da sua logo -->
+    <img src="IMG/F-Sao-jorge.png" alt="Logo">
     <h1>OCR e Captura de Imagem</h1>
   </header>
   <main>
     <!-- Seção da câmera -->
     <div class="camera-section">
       <video id="video" autoplay playsinline></video>
-      <canvas id="canvas" style="display: none;"></canvas> <!-- Canvas oculto -->
+      <canvas id="canvas" style="display: none;"></canvas>
       <div class="controls">
         <button id="capture-btn">Capturar</button>
         <button id="upload-btn" disabled>Enviar <span id="loader" style="display: none;">⏳</span></button>
       </div>
     </div>
-    
 
     <!-- Seção de dados digitalizados -->
     <div class="output-section">
@@ -226,88 +219,136 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <!-- Socket.IO -->
   <script src="/socket.io/socket.io.js"></script>
-
   <script>
-    const video = document.getElementById("video");
-    const canvas = document.getElementById("canvas");
-    const outputArea = document.getElementById("output");
-    const captureButton = document.getElementById("capture-btn");
-    const uploadButton = document.getElementById("upload-btn");
-    const exportButton = document.getElementById("export-btn");
-    const loader = document.getElementById("loader");
-    const socket = io(); // Conecta ao servidor via Socket.IO
+    document.addEventListener("DOMContentLoaded", () => {
+      const video = document.getElementById("video");
+      const canvas = document.getElementById("canvas");
+      const captureButton = document.getElementById("capture-btn");
+      const uploadButton = document.getElementById("upload-btn");
+      const outputTextarea = document.getElementById("output");
+      const exportButton = document.getElementById("export-btn");
+  
+      const socket = io(); // Conecta ao servidor Socket.IO
+const roomId = "sala-ocr-123"; // Defina um ID único para a sessão
+socket.emit("join-room", roomId); // Entra na sala
 
-    // Configuração da câmera
-    navigator.mediaDevices
-      .getUserMedia({ video: { facingMode: "environment" } })
-      .then((stream) => {
-        video.srcObject = stream;
-        video.play();
-      })
-      .catch((err) => {
-        console.error("Erro ao acessar câmera:", err);
-        alert("Não foi possível acessar a câmera. Verifique as permissões.");
-      });
-
-    // Capturar imagem e enviar para o OCR
-    captureButton.addEventListener("click", async () => {
-  const context = canvas.getContext("2d");
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-
-  context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-  canvas.toBlob(async (blob) => {
-    try {
-      loader.style.display = "inline";
-      uploadButton.disabled = true;
-
-      const formData = new FormData();
-      formData.append("image", blob, "captured.png");
-
-      console.log("📸 Enviando imagem para o servidor...");
-
-      const response = await fetch("http://localhost:3000/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      console.log("🔄 Resposta recebida do servidor:", response);
-
-      if (!response.ok) {
-        throw new Error(`Erro HTTP: ${response.status}`);
+  
+      // Inicializa a câmera
+      async function startCamera() {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+          video.srcObject = stream;
+        } catch (err) {
+          console.error("Erro ao acessar câmera:", err);
+          alert("Erro ao acessar a câmera. Verifique as permissões.");
+        }
       }
+  
+      // Captura a imagem
+      captureButton.addEventListener("click", () => {
+        const context = canvas.getContext("2d");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        uploadButton.disabled = false;
+      });
+  
+      // Envia a imagem para o servidor
+      uploadButton.addEventListener("click", async () => {
+        canvas.toBlob(async (blob) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            // Envia a imagem para a sala específica
+            socket.emit("image", reader.result, roomId);
+          };
+          reader.readAsDataURL(blob);
+  
+          try {
+            uploadButton.disabled = true;
+            document.getElementById("loader").style.display = "inline";
+  
+            const formData = new FormData();
+            formData.append("image", blob, "captured.png");
+  
+            const response = await fetch("/upload", { method: "POST", body: formData });
+            if (!response.ok) {
+              throw new Error(`Erro HTTP: ${response.status}`);
+            }
+  
+            const result = await response.json();
+            console.log("OCR Resultado:", result.text);
+  
+            // Exibe o texto extraído no textarea
+            outputTextarea.value = result.text;
+            exportButton.disabled = false;
+          } catch (err) {
+            console.error("Erro ao enviar imagem:", err);
+            alert("Erro ao enviar imagem. Tente novamente.");
+          } finally {
+            uploadButton.disabled = false;
+            document.getElementById("loader").style.display = "none";
+          }
+        }, "image/png");
+      });
+  
+      // Recebe a imagem do celular e exibe no PC
+      socket.on("image", (data) => {
+        const img = new Image();
+        img.src = data;
+        img.onload = () => {
+          const context = canvas.getContext("2d");
+          context.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+      });
+      
+  
+      // Inicializa a câmera ao carregar a página
+      startCamera();
+    });
+    document.getElementById("export-btn").addEventListener("click", () => {
+  const text = outputTextarea.value;
+  if (!text) {
+    alert("Nenhum dado para exportar.");
+    return;
+  }
 
-      const extractedData = await response.json();
-      console.log("✅ Dados extraídos:", extractedData);
-
-      outputArea.value = `
-        Nome: ${extractedData.nome || "Não encontrado"}
-        CEP: ${extractedData.cep || "Não encontrado"}
-        Endereço: ${extractedData.endereco || "Não encontrado"}
-        RG: ${extractedData.rg || "Não encontrado"}
-        CPF: ${extractedData.cpf || "Não encontrado"}
-        Telefone: ${extractedData.telefone || "Não encontrado"}
-      `;
-    } catch (err) {
-      console.error("❌ Erro ao enviar imagem:", err);
-      alert("Falha na digitalização da imagem. Tente novamente.");
-    } finally {
-      loader.style.display = "none";
-      uploadButton.disabled = false;
-    }
-  }, "image/png");
+  const data = [{ texto: text }]; // Exemplo de dados
+  fetch("/export", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((result) => {
+      console.log("Exportação concluída:", result);
+      alert("Dados exportados com sucesso!");
+    })
+    .catch((err) => {
+      console.error("Erro ao exportar dados:", err);
+      alert("Erro ao exportar dados. Tente novamente.");
+    });
 });
 
-
-
-
-
-    // Gerar QR Code para o URL do servidor
-    socket.on("ngrok_url", (url) => {
-      QRCode.toCanvas(document.getElementById("qrcode"), url);
-      document.getElementById("link").href = url;
-    });
+document.getElementById("cep").addEventListener("change", async () => {
+  const cep = document.getElementById("cep").value;
+  if (cep.length === 8) {
+    try {
+      const response = await fetch(`/cep/${cep}`);
+      const result = await response.json();
+      if (result.success) {
+        document.getElementById("endereco").value = result.data.logradouro;
+        document.getElementById("bairro").value = result.data.bairro;
+        document.getElementById("cidade").value = result.data.localidade;
+        document.getElementById("uf").value = result.data.uf;
+      } else {
+        alert("CEP não encontrado.");
+      }
+    } catch (err) {
+      console.error("Erro ao buscar CEP:", err);
+      alert("Erro ao buscar CEP. Tente novamente.");
+    }
+  }
+});
   </script>
 </body>
 </html>

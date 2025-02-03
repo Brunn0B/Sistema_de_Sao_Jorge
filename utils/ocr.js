@@ -1,46 +1,40 @@
 const Tesseract = require("tesseract.js");
-const fs = require("fs");
 
 async function extractTextFromImage(imageBuffer) {
   try {
-    // Salva a imagem temporariamente (caso necessário)
-    const tempPath = "./temp_image.png";
-    fs.writeFileSync(tempPath, imageBuffer);
-
-    // Executa o OCR com idioma português
-    const { data } = await Tesseract.recognize(tempPath, "por", {
-      logger: (m) => console.log(m), // Para depuração
+    const { data } = await Tesseract.recognize(imageBuffer, "por", {
+      logger: (m) => console.log(m), // Log do progresso
+      tessedit_char_whitelist: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-/, ", // Restringe caracteres
+      preserve_interword_spaces: 1, // Mantém espaçamentos
+      tessedit_pageseg_mode: 6, // Modo de segmentação para blocos de texto
+      tessedit_ocr_engine_mode: 3, // Usa o modo LSTM (melhor para manuscritos)
     });
 
-    // Remove o arquivo temporário
-    fs.unlinkSync(tempPath);
+    const extractedText = data.text.trim();
 
-    // Processa o texto extraído para encontrar os campos desejados
-    return processExtractedText(data.text);
+    if (!extractedText) {
+      throw new Error("Nenhum texto identificado.");
+    }
+
+    return extractedText;
   } catch (err) {
-    console.error("Erro ao processar OCR:", err);
+    console.error("❌ Erro no OCR:", err);
     return null;
   }
 }
 
-// Função para processar o texto e encontrar campos importantes
-function processExtractedText(text) {
-  const extractedData = {};
+const extractDataFromText = (text) => {
+  if (!text) return {}; // Se não houver texto, retorna objeto vazio
 
-  // Expressões regulares para identificar os campos
-  extractedData.nome = text.match(/REQUERENTE\s*(.*)/i)?.[1]?.trim() || "Não encontrado";
-  extractedData.dataNascimento = text.match(/NASCIMENTO\s*(\d{2}\/\d{2}\/\d{4})/i)?.[1] || "Não encontrado";
-  extractedData.endereco = text.match(/ENDEREÇO\s*(.*)/i)?.[1]?.trim() || "Não encontrado";
-  extractedData.cep = text.match(/CEP:\s*(\d{5}-\d{3})/i)?.[1] || "Não encontrado";
-  extractedData.rg = text.match(/R\.G\.\s*(\S+)/i)?.[1] || "Não encontrado";
-  extractedData.cpf = text.match(/CPF\s*(\S+)/i)?.[1] || "Não encontrado";
-  extractedData.telefone = text.match(/TELEFONE\(S\)\s*(\S+)/i)?.[1] || "Não encontrado";
+  return {
+    nome: text.match(/REQUERENTE:\s*([A-ZÀ-Ú][^\n]+)/i)?.[1]?.trim() ?? "",
+    cpf: text.match(/CPF:\s*(\d{3}\.\d{3}\.\d{3}-\d{2})/i)?.[1]?.trim() ?? "",
+    rg: text.match(/RG:\s*(\d{1,2}\.\d{3}\.\d{3})/i)?.[1]?.trim() ?? "",
+    telefone: text.match(/TELEFONE:\s*(\(\d{2}\)\s?\d{4,5}-\d{4})/i)?.[1]?.trim() ?? "",
+    cep: text.match(/CEP:\s*(\d{5}-\d{3})/i)?.[1]?.trim() ?? "",
+    endereco: text.match(/ENDEREÇO:\s*([^\n]+)/i)?.[1]?.trim() ?? "",
+    dataNascimento: text.match(/NASCIMENTO:\s*(\d{2}\/\d{2}\/\d{4})/i)?.[1]?.trim() ?? "",
+  };
+};
 
-  // Identifica se é Pessoa Idosa ou Pessoa com Deficiência
-  extractedData.tipo = text.includes("☒ PESSOA COM DEFICIÊNCIA") ? "Deficiência" :
-                      text.includes("☒ PESSOA IDOSA") ? "Idoso" : "Não identificado";
-
-  return extractedData;
-}
-
-module.exports = { extractTextFromImage };
+module.exports = { extractTextFromImage, extractDataFromText };
