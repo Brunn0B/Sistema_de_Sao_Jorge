@@ -1,54 +1,67 @@
 const XLSX = require("xlsx");
 const fs = require("fs");
 const path = require("path");
+const os = require("os");
 
-const filePath = path.join(__dirname, "dados.xlsx");
+// Caminho CORRETO para a área de trabalho (OneDrive + Área de Trabalho)
+const desktopPath = path.join(
+  os.homedir(),
+  "OneDrive",
+  "Área de Trabalho",
+  "dados_ocr.xlsx"
+);
 
 function saveDataToExcel(data) {
   try {
-    if (!data) {
-      throw new Error("Os dados fornecidos são inválidos ou indefinidos.");
-    }
+    if (!data) throw new Error("Nenhum dado fornecido para exportação.");
 
-    // Se for um único objeto, transforma em array
-    const dataArray = Array.isArray(data) ? data : [data];
+    // Campos esperados
+    const camposEsperados = [
+      "nome", "cpf", "rg", "telefone", "cep", "endereco", "dataNascimento"
+    ];
 
+    // Sanitiza os dados
+    const dadosSanitizados = (Array.isArray(data) ? data : [data]).map(item => {
+      const novoItem = {};
+      camposEsperados.forEach(campo => {
+        novoItem[campo] = item[campo] || "-"; // Substitui undefined/null por "-"
+      });
+      return novoItem;
+    });
+
+    // Cria/Atualiza a planilha
     let workbook;
-    if (fs.existsSync(filePath)) {
-      workbook = XLSX.readFile(filePath);
+    if (fs.existsSync(desktopPath)) {
+      workbook = XLSX.readFile(desktopPath);
     } else {
       workbook = XLSX.utils.book_new();
     }
 
-    // Garante que todas as propriedades estejam preenchidas
-    const sanitizedData = dataArray.map(item => ({
-      nome: item.nome || "",
-      cpf: item.cpf || "",
-      rg: item.rg || "",
-      telefone: item.telefone || "",
-      cep: item.cep || "",
-      endereco: item.endereco || "",
-      dataNascimento: item.dataNascimento || ""
+    // Cria a worksheet
+    const worksheet = XLSX.utils.json_to_sheet(dadosSanitizados, {
+      header: camposEsperados
+    });
+
+    // Ajusta largura das colunas
+    const colWidths = camposEsperados.map(campo => ({
+      wch: Math.max(...dadosSanitizados.map(item => String(item[campo]).length), campo.length) + 3
     }));
+    worksheet["!cols"] = colWidths;
 
-    // Criar nova aba ou substituir a existente
-    const worksheet = XLSX.utils.json_to_sheet(sanitizedData);
-
-    // Remove a aba antiga se já existir
-    const sheetIndex = workbook.SheetNames.indexOf("Dados");
-    if (sheetIndex !== -1) {
-      workbook.SheetNames.splice(sheetIndex, 1);
-      delete workbook.Sheets["Dados"];
+    // Atualiza a planilha
+    if (workbook.SheetNames.includes("Dados")) {
+      workbook.Sheets["Dados"] = worksheet;
+    } else {
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Dados");
     }
 
-    // Adiciona a nova aba com os dados atualizados
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Dados");
+    // Salva o arquivo
+    XLSX.writeFile(workbook, desktopPath);
+    console.log(`✅ Planilha salva em: ${desktopPath}`);
 
-    // Salva a planilha
-    XLSX.writeFile(workbook, filePath);
-    console.log(`✅ Planilha salva em: ${filePath}`);
   } catch (error) {
-    console.error("❌ Erro ao salvar a planilha:", error);
+    console.error("❌ Erro crítico na exportação:", error);
+    throw error; // Propaga o erro para ser capturado no endpoint
   }
 }
 

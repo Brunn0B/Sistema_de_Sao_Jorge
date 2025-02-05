@@ -246,12 +246,20 @@ socket.emit("join-room", roomId); // Entra na sala
   
       // Captura a imagem
       captureButton.addEventListener("click", () => {
-        const context = canvas.getContext("2d");
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        uploadButton.disabled = false;
-      });
+  const context = canvas.getContext("2d");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  // Efeito de flash
+  video.style.transition = "opacity 0.3s";
+  video.style.opacity = 0;
+  setTimeout(() => {
+    video.style.opacity = 1;
+  }, 300);
+
+  uploadButton.disabled = false;
+});
   
       // Envia a imagem para o servidor
       uploadButton.addEventListener("click", async () => {
@@ -301,7 +309,55 @@ socket.emit("join-room", roomId); // Entra na sala
         };
       });
       
-  
+      async function checkCameraPermissions() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    stream.getTracks().forEach(track => track.stop()); // Libera a câmera imediatamente
+    return true;
+  } catch (err) {
+    console.error("Permissão da câmera negada:", err);
+    return false;
+  }
+}
+
+document.getElementById("export-btn").addEventListener("click", () => {
+  const text = outputTextarea.value.trim();
+  if (!text) {
+    alert("Nenhum dado para exportar.");
+    return;
+  }
+
+  const data = [{ texto: text }];
+  fetch("/export", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((result) => {
+      console.log("Exportação concluída:", result);
+      alert("Dados exportados com sucesso!");
+    })
+    .catch((err) => {
+      console.error("Erro ao exportar dados:", err);
+      alert("Erro ao exportar dados. Tente novamente.");
+    });
+});
+async function startCamera() {
+  const hasPermission = await checkCameraPermissions();
+  if (!hasPermission) {
+    alert("Permissão para acessar a câmera é necessária.");
+    return;
+  }
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+    video.srcObject = stream;
+  } catch (err) {
+    console.error("Erro ao acessar câmera:", err);
+    alert("Erro ao acessar a câmera. Verifique as permissões.");
+  }
+}
       // Inicializa a câmera ao carregar a página
       startCamera();
     });
