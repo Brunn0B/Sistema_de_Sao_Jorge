@@ -37,12 +37,14 @@ app.post("/upload", upload.single("image"), async (req, res) => {
   try {
     // Processamento da imagem com Sharp
     const processedImage = await sharp(req.file.buffer)
-      .resize({ width: 1500 }) // Mantém resolução sem exagero
-      .grayscale() // Remove cores desnecessárias
-      .normalize() // Melhora contraste
-      .sharpen() // Aumenta nitidez
-      .median(3) // Reduz ruídos mantendo detalhes
-      .toBuffer(); // Converte para buffer
+    .resize({ width: 1500 }) // Mantém resolução alta para melhor leitura
+    .grayscale() // Remove cores para destacar o texto
+    .modulate({ brightness: 1.2, contrast: 1.5 }) // Aumenta brilho e contraste
+    .median(5) // Reduz ruído mantendo detalhes
+    .sharpen({ sigma: 1 }) // Aumenta nitidez sutilmente
+    .threshold(180) // Binariza a imagem para destacar texto
+    .toBuffer();
+  
 
     // Extrai o texto da imagem processada
     const text = await extractTextFromImage(processedImage);
@@ -77,6 +79,7 @@ app.post("/upload", upload.single("image"), async (req, res) => {
   }
 });
 
+
 // Rota para exportar dados para Excel
 app.post("/export", (req, res) => {
   const data = req.body;
@@ -90,8 +93,8 @@ app.post("/export", (req, res) => {
     saveDataToExcel(data);
     res.json({ success: true, message: "Dados exportados com sucesso!" });
   } catch (error) {
-    console.error("❌ Erro ao exportar dados:", error);
-    res.status(500).json({ success: false, message: "Erro ao exportar dados" });
+    console.error("❌ Erro ao exportar:", error);
+    res.status(500).json({ success: false, message: "Erro interno" });
   }
 });
 

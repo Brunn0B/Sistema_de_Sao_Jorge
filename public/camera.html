@@ -155,6 +155,10 @@
         padding: 10px;
       }
 
+        #output{
+          max-width: 365px;
+        }
+
       .camera-section {
         flex: none;
         height: 50%;
@@ -321,28 +325,25 @@ socket.emit("join-room", roomId); // Entra na sala
 }
 
 document.getElementById("export-btn").addEventListener("click", () => {
-  const text = outputTextarea.value.trim();
-  if (!text) {
-    alert("Nenhum dado para exportar.");
-    return;
-  }
+  // Pega os dados do textarea (ou do objeto extraído)
+  const dadosExtraidos = JSON.parse(outputTextarea.value || "{}");
 
-  const data = [{ texto: text }];
+  // Envia os dados para o servidor
   fetch("/export", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(dadosExtraidos)
   })
-    .then((response) => response.json())
-    .then((result) => {
-      console.log("Exportação concluída:", result);
-      alert("Dados exportados com sucesso!");
-    })
-    .catch((err) => {
-      console.error("Erro ao exportar dados:", err);
-      alert("Erro ao exportar dados. Tente novamente.");
-    });
+  .then(response => response.json())
+  .then(result => {
+    alert(result.message);
+  })
+  .catch(err => {
+    console.error("Erro ao exportar:", err);
+    alert("Erro ao exportar. Verifique o console.");
+  });
 });
+
 async function startCamera() {
   const hasPermission = await checkCameraPermissions();
   if (!hasPermission) {
@@ -362,27 +363,23 @@ async function startCamera() {
       startCamera();
     });
     document.getElementById("export-btn").addEventListener("click", () => {
-  const text = outputTextarea.value;
-  if (!text) {
-    alert("Nenhum dado para exportar.");
-    return;
-  }
+  // Pega os dados do textarea (ou do objeto extraído)
+  const dadosExtraidos = JSON.parse(outputTextarea.value || "{}");
 
-  const data = [{ texto: text }]; // Exemplo de dados
+  // Envia apenas os dados válidos
   fetch("/export", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(dadosExtraidos)
   })
-    .then((response) => response.json())
-    .then((result) => {
-      console.log("Exportação concluída:", result);
-      alert("Dados exportados com sucesso!");
-    })
-    .catch((err) => {
-      console.error("Erro ao exportar dados:", err);
-      alert("Erro ao exportar dados. Tente novamente.");
-    });
+  .then(response => response.json())
+  .then(result => {
+    alert(result.message);
+  })
+  .catch(err => {
+    console.error("Erro ao exportar:", err);
+    alert("Erro ao exportar. Verifique o console.");
+  });
 });
 
 document.getElementById("cep").addEventListener("change", async () => {

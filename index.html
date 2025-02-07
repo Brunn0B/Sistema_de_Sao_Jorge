@@ -13,7 +13,7 @@
     text-align: center;
     margin: 0;
     padding: 0;
-    background-image: url('IMG/Novo Projeto.png');
+    background-image: url('public/IMG/Novo Projeto.png');
     background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
@@ -93,7 +93,7 @@
 
 <body class="background">
     <div class="container">
-        <img src="IMG/Logo Do loguin.png" alt="Logo" style="max-width: 50%; height: auto;">
+        <img src="public/IMG/Logo Do loguin.png" alt="Logo" style="max-width: 50%; height: auto;">
         <h1>Fazer Login</h1>
 
         <form id="loginForm">
@@ -126,7 +126,7 @@
                 if (usuarios.hasOwnProperty(usuarioKey) && usuarios[usuarioKey].email === email && usuarios[usuarioKey].senha === senha) {
                     console.log('Login bem-sucedido como usuário comum!');
                     alert('Login bem-sucedido como usuário comum!');
-                    window.location.href = '-TelaDoUsuarioComum.html';
+                    window.location.href = 'public/-TelaDoUsuarioComum.html';
                     return;
                 }
             }
@@ -136,7 +136,7 @@
                 if (admins.hasOwnProperty(adminKey) && admins[adminKey].email === email && admins[adminKey].senha === senha) {
                     console.log('Login bem-sucedido como administrador!');
                     alert('Login bem-sucedido como administrador!');
-                    window.location.href = '-TelaDoAdministrador.html';
+                    window.location.href = 'public/-TelaDoAdministrador.html';
                     return;
                 }
             }
