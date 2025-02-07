@@ -56,7 +56,7 @@
 
         #menu-servicos a {
             text-decoration: none;
-            color: #fff;
+            color: #fafafa;
             font-size: 18px;
             margin-bottom: 10px;
             display: flex;
@@ -331,7 +331,99 @@
         }
 
 
-       
+        @media screen and (max-width: 768px) {
+    body {
+        font-family: 'Roboto', Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        background-color: rgb(55, 55, 55);
+        color: rgb(0, 0, 0);
+        background-image: none;
+    }
+
+    html, body {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    #menu-servicos a {
+        font-size: 30px;
+        border-radius: 10px;
+        color: rgb(255, 255, 255);
+        background-color: rgb(60, 60, 60);
+    }
+   
+    #menu-servicos {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        background-color: rgba(9, 9, 9, 0.414); /* Retângulo cinza transparente */
+        color: rgb(255, 253, 253);
+        z-index: 10;
+        border-radius: 8px;
+        font-size: 50px;
+        width: 410px;
+        margin: 0 auto;
+    }
+
+    #menu-servicos .menu-item {
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        color: #000000;
+    }
+
+    #menu-servicos .menu-item:hover {
+        background-color: #000000;
+    }
+
+    #conteudo, footer {
+        display: none;
+    }
+
+    #code-rain {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background-color: rgb(52, 52, 52);
+        color: white;
+        font-family: 'Courier New', monospace;
+        font-size: 18px;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .code {
+        position: absolute;
+        top: -20px;
+        animation: fall linear infinite;
+        opacity: 1;
+        white-space: nowrap;
+    }
+
+#dropdown-content {
+    display: none;
+}
+
+    @keyframes fall {
+        0% {
+            transform: translateY(-100px);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh);
+            opacity: 0;
+        }
+    }
+}
+
     </style>
 </head>
 
@@ -344,11 +436,12 @@
         <div class="logo">
             <img src="IMG/F-Sao-jorge.png" alt="Logo">
 
+    
         </div>
 
-        <a href="camera.html">Leitor doc</a>
-
         <div class="dropdown" onclick="toggleDropdown(event)">
+            <a href="camera.html">Leitor doc</a>
+            <a href="credenciasis.html">Credencias</a>
             <a href="#" class="dropdown-toggle">Serviços &#9662;</a>
             <div class="dropdown-content">
                 <a href="#" onclick="toggleSubMenu(event, 'financeiro')">Financeiro e Contabilidade &#9662;</a>
@@ -394,16 +487,17 @@
     <div id="conteudo">
         <section id="descricao">
             <div class="descricao-texto">
-                <h2>Fundação São Jorge: Recursos do Sistema</h2>
-                <p>O sistema apresenta funcionalidades específicas para diferentes áreas operacionais, proporcionando eficiência e controle. Alguns dos recursos incluem:</p>
+                <h2>Sistema de São Jorge (SSJ): Recursos</h2>
+                <p>O SSJ foi desenvolvido para otimizar o tempo de trabalho e melhorar a performance em processos de digitalização. Alguns dos recursos incluem:</p>
                 <ul>
-                    <li><strong>Financeiro e Contabilidade:</strong> Gerenciamento de contas a pagar, contas a receber, fluxo de caixa, orçamentos, relatórios financeiros e análise de custos.</li>
-                    <li><strong>Recursos Humanos:</strong> Módulo de Recursos Humanos, gerenciamento de folha de pagamento, controle de horas trabalhadas, administração de benefícios e férias.</li>
-                    <li><strong>Administração Geral:</strong> Controle de usuários e permissões, gerenciamento de projetos e atividades, relatórios de desempenho global.</li>
-                    <li><strong>Tecnologia da Informação (TI):</strong> Controle de ativos de TI, registro e resolução de tickets de suporte, segurança e acesso a sistemas.</li>
+                    <li><strong>Captura de Imagens:</strong> Digitalização de documentos via dispositivo móvel.</li>
+                    <li><strong>Espelhamento em Tempo Real:</strong> Visualização da tela do celular no PC usando Socket.IO.</li>
+                    <li><strong>OCR Avançado:</strong> Extração de texto de imagens, incluindo manuscritos, com Tesseract.js.</li>
+                    <li><strong>Exportação para Excel:</strong> Salvamento automático de dados em planilhas estruturadas.</li>
                 </ul>
-                <p>Cada funcionário tem acesso restrito às funcionalidades relacionadas à sua área de atuação, garantindo segurança e eficiência nas operações.</p>
+                <p>O sistema integra tecnologias como Electron, Tesseract.js e Socket.IO para otimizar o fluxo de trabalho e garantir precisão no processo de digitalização.</p>
             </div>
+            
 
             <div class="descricao-imagem">
                 <img src="IMG/h21.jpeg" alt="Imagem Grande">
@@ -427,6 +521,77 @@
         </div>
     </div>
     
+    <script>document.addEventListener("DOMContentLoaded", function () {
+        // Verifica se o tamanho da tela é menor que 768px
+        if (window.innerWidth <= 768) {
+            const commands = [
+            "# Relatório Completo do Projeto OCR com Captura de Imagem e Exportação de Dados",
+                "## Objetivo do Projeto",
+                "Desenvolver uma aplicação web para capturar imagens da câmera, processar essas imagens utilizando OCR...",
+                "---",
+                "## Tecnologias Utilizadas",
+                "1. **Frontend**: HTML, CSS e JavaScript para criação da interface.",
+                "2. **Backend**: Node.js com Express para criar o servidor, Socket.IO para comunicação em tempo real.",
+                "3. **Outras Ferramentas**: Ngrok para tornar o servidor acessível remotamente.",
+                "---",
+                "## Estrutura do Projeto",
+                "- **Frontend (HTML e JavaScript)**: Interface responsiva para capturar imagens.",
+                "- **Backend (server.js)**: Gerencia o processamento da imagem capturada, realiza o OCR.",
+                "---",
+                "C:\\Users\\brito>cd C:\\Users\\brito\\OneDrive\\Área de Trabalho\\Ngrok",
+                "C:\\Users\\brito\\OneDrive\\Área de Trabalho\\Ngrok>ngrok http 3000",
+                "C:\\Users\\brito\\OneDrive\\Área de Trabalho\\Ngrok>pip install requests twilio",
+                "Requirement already satisfied: requests...",
+                "Requirement already satisfied: twilio...",
+                "C:\\Users\\brito\\OneDrive\\Área de Trabalho\\Ngrok>",
+            ];
+    
+            function createCodeRain() {
+                const container = document.createElement("div");
+                container.id = "code-rain";
+                container.style = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    background-color: rgb(52, 52, 52); 
+                    color: white; 
+                    font-family: 'Courier New', monospace;
+                    font-size: 14px; 
+                    overflow: hidden;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    padding: 10px;
+                `;
+                document.body.appendChild(container);
+    
+                let index = 0;
+    
+                function addLine() {
+                    if (index >= commands.length) index = 0; // Reinicia o loop
+                    const line = document.createElement("div");
+                    line.textContent = commands[index];
+                    container.appendChild(line);
+    
+                    // Remove a linha mais antiga se o número de linhas ultrapassar 30
+                    if (container.scrollHeight > container.clientHeight) {
+                        container.removeChild(container.firstChild);
+                    }
+    
+                    index++;
+                    setTimeout(addLine, 30); // Próxima linha em 150ms
+                }
+    
+                addLine(); // Inicia o loop
+            }
+    
+            createCodeRain();
+        }
+    });
+    </script>
+        
 
 
     <script src="//unpkg.com/string-similarity/umd/string-similarity.min.js"></script>

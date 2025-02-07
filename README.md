@@ -1,28 +1,52 @@
-Sistma de sao jorge 
-===
-Resumo: sistema operaaçional criado com o intuito de diminuir  o tempo de trabalho, e criar mobilidade e performance.
+# Sistema de São Jorge (SSJ)  
 
-## Informações do Artigo
-- Título:  `SSJ`
-- Autores:  `Brunno de Brito Barros`
-![Sistema inicial(Index)](/public/IMG/image.png)
+**Resumo**: Sistema operacional criado com o intuito de diminuir o tempo de trabalho, aumentar a mobilidade e melhorar a performance em processos de digitalização e tratamento de documentos físicos.  
 
-## Instalação e Dependências
-- Node.js (para rodar o Electron)
-- Electron
-- MongoDB
-- ngrok
-- Python (caso necessário)
-- Pytorch (caso necessário)
-- numpy (caso necessário)
+---
 
-## Preparação do Conjunto de Dados
-| Conjunto de Dados | Descrição | Download |
-| ---               | ---       | ---      |
-| dataset-A         | Conjunto de dados de imagens para treinamento do modelo de reconhecimento. Contém 10.000 imagens categorizadas. | [baixar](link-para-dataset-A) |
-| dataset-B         | Conjunto de dados de textos para análise de sentimentos. Contém 5.000 amostras de texto em inglês. | [baixar](link-para-dataset-B) |
-| dataset-C         | Conjunto de dados de áudio para treinamento de modelos de reconhecimento de fala. Contém 2.000 arquivos de áudio. | [baixar](link-para-dataset-C) |
+## Informações do Artigo  
+- **Título**: `SSJ - OCR com Espelhamento em Tempo Real`  
+- **Autor**: `Brunno de Brito Barros`  
+- **Repositório**: [GitHub](link-do-repositório)  
+- **Demonstração**:  
+  ![Interface do Sistema](/public/IMG/image.png)  
 
+---
+
+## Recursos Principais  
+- 📸 **Captura de Imagens via Dispositivo Móvel**: Use a câmera do celular para digitalizar documentos.  
+- 🔄 **Espelhamento em Tempo Real**: Visualize a tela do celular no PC via Socket.IO.  
+- ✨ **OCR Avançado**: Extraia texto de imagens (incluindo manuscritos) com Tesseract.js.  
+- 📊 **Exportação para Excel**: Salve dados estruturados automaticamente em planilhas.  
+- 🏡 **Validação de Endereço**: Busca de CEP integrada à API ViaCEP.  
+
+![Interface do Sistema](public/IMG/Capturadetela2025-02-02230027.png)
+---
+
+## Tecnologias Utilizadas  
+| Tecnologia          | Descrição                                     |  
+|---------------------|-----------------------------------------------|  
+| **Electron**        | Framework para construir aplicações desktop.  |  
+| **Node.js**         | Ambiente de execução back-end.                |  
+| **Tesseract.js**    | OCR para extração de texto de imagens.        |  
+| **Socket.IO**       | Comunicação em tempo real entre dispositivos. |  
+| **Sharp**           | Pré-processamento de imagens para melhor OCR. |  
+| **Ngrok**           | Expõe servidores locais para acesso remoto.   |  
+
+---
+
+## Instalação e Dependências  
+### Pré-requisitos  
+- Node.js (v18+)  
+- NPM 
+- Ngrok (para acesso remoto)  
+- Electron  (Configurado no Json para startar projeto (npm start))
+
+### Principais Adaptações:  
+1. **Foco no Projeto Real**: Removi seções irrelevantes (como conjuntos de dados de áudio/Python) e mantive apenas o necessário para OCR, espelhamento e exportação.  
+2. **Instruções Claras**: Detalhei o fluxo de instalação e uso específico para o SSJ.  
+3. **Tecnologias Reais**: Liste apenas as tecnologias efetivamente usadas (Electron, Tesseract.js, etc.).  
+4. **Imagem Contextual**: Adicionei um placeholder para a screenshot da interface (`image.png`).  
 
 
 ## Hierarquia de Diretórios
@@ -22833,31 +22857,4 @@ Resumo: sistema operaaçional criado com o intuito de diminuir  o tempo de traba
 |    |—— ocr.js
 |    |—— viacep.js
 ```
-## Code Details
-### Tested Platform
-- software
-  ```
-  OS: Debian unstable (May 2021), Ubuntu LTS
-  Python: 3.8.5 (anaconda)
-  PyTorch: 1.7.1, 1.8.1
-  ```
-- hardware
-  ```
-  CPU: Intel Xeon 6226R
-  GPU: Nvidia RTX3090 (24GB)
-  ```
-### Hyper parameters
-```
-```
-## References
-- [paper-1]()
-- [paper-2]()
-- [code-1](https://github.com)
-- [code-2](https://github.com)
-  
-## License
 
-## Citing
-If you use xxx,please use the following BibTeX entry.
-```
-```

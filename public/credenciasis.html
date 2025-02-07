@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credenciais</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 250px;
+            background: #1e1e1e;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .sidebar img {
+            width: 100%;
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+        .sidebar a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 18px;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .sidebar a:hover {
+            background: #3f51b5;
+        }
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: auto;
+        }
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .filters input, .filters select {
+            padding: 8px;
+            background: #222;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background: #333;
+        }
+        .checkbox {
+            text-align: center;
+        }
+        .button {
+            background: #444;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: block;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="IMG/F-Sao-jorge.png" alt="Logo">
+        <a href="#" class="back-arrow" onclick="history.back();">← Voltar</a>
+        <a href="camera.html">Camera</a>
+    </div>
+    <div class="container">
+        <input type="file" class="file-input" id="fileInput" accept=".xlsx, .xls">
+        <div class="filters">
+            <select id="motivoFilter">
+                <option value="">Todos os Motivos</option>
+                <option value="CPED">CPED</option>
+                <option value="CPEI">CPEI</option>
+            </select>
+            <select id="tipoFilter">
+                <option value="">Todos os Tipos</option>
+                <option value="Inicial">Inicial</option>
+                <option value="Renovação">Renovação</option>
+                <option value="Segunda via">Segunda via</option>
+            </select>
+            <input type="text" id="numeroFilter" placeholder="Número da Credencial">
+        </div>
+        <table id="dataTable">
+            <thead>
+                <tr id="tableHead">
+                    <th>Selecionar</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+        <button class="button" id="printButton">Imprimir Credenciais</button>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    processExcel(e.target.result);
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        });
+
+        function processExcel(data) {
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+            
+            const thead = document.getElementById('tableHead');
+            thead.innerHTML = '<th>Selecionar</th>';
+            json[0].forEach(header => {
+                thead.innerHTML += `<th>${header}</th>`;
+            });
+            
+            const tbody = document.querySelector('#dataTable tbody');
+            tbody.innerHTML = '';
+            
+            json.slice(1).forEach(row => {
+                if (row.length > 0) {
+                    const tr = document.createElement('tr');
+                    let rowHTML = '<td class="checkbox"><input type="checkbox"></td>';
+                    row.forEach(cell => {
+                        rowHTML += `<td>${cell || ''}</td>`;
+                    });
+                    tr.innerHTML = rowHTML;
+                    tbody.appendChild(tr);
+                }
+            });
+        }
+
+        document.getElementById('motivoFilter').addEventListener('change', filterTable);
+        document.getElementById('tipoFilter').addEventListener('change', filterTable);
+        document.getElementById('numeroFilter').addEventListener('input', filterTable);
+
+        function filterTable() {
+            const motivo = document.getElementById('motivoFilter').value.toLowerCase();
+            const tipo = document.getElementById('tipoFilter').value.toLowerCase();
+            const numero = document.getElementById('numeroFilter').value.toLowerCase();
+            const rows = document.querySelectorAll('#dataTable tbody tr');
+            
+            rows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                let motivoMatch = !motivo || row.innerText.toLowerCase().includes(motivo);
+                let tipoMatch = !tipo || row.innerText.toLowerCase().includes(tipo);
+                let numeroMatch = !numero || row.innerText.toLowerCase().includes(numero);
+                row.style.display = motivoMatch && tipoMatch && numeroMatch ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>
